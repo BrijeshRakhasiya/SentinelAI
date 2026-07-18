@@ -1,7 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import clsx from "clsx";
-import { LayoutDashboard, LogOut, Plug, ShieldHalf } from "lucide-react";
+import { LayoutDashboard, LogOut, MessageCircle, Plug, ShieldHalf } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
+import { useChatUI } from "../../context/ChatUIContext";
 import { useHealthCheck } from "../../hooks/useHealthCheck";
 import { StatusPill } from "../StatusPill";
 
@@ -14,6 +15,7 @@ export function Navbar() {
   const { user, logout } = useAuth();
   const health = useHealthCheck();
   const navigate = useNavigate();
+  const { open: chatOpen, toggle: toggleChat } = useChatUI();
 
   const handleLogout = async () => {
     await logout();
@@ -65,6 +67,20 @@ export function Navbar() {
             <p className="text-xs font-medium text-slate-300">{user?.username}</p>
             <p className="text-[10px] uppercase tracking-wide text-slate-500">Analyst</p>
           </div>
+          <button
+            onClick={toggleChat}
+            aria-label={chatOpen ? "Close SentinelAI assistant" : "Open SentinelAI assistant"}
+            title="SentinelAI Assistant"
+            className={clsx(
+              "flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
+              chatOpen
+                ? "border-sentinel-cyan/40 bg-sentinel-cyan/15 text-sentinel-cyan"
+                : "border-sentinel-border text-slate-300 hover:border-sentinel-cyan/40 hover:text-sentinel-cyan"
+            )}
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Assistant</span>
+          </button>
           <button
             onClick={handleLogout}
             className="flex items-center gap-1.5 rounded-lg border border-sentinel-border px-3 py-1.5 text-sm font-medium text-slate-300 transition-colors hover:border-red-500/40 hover:text-red-300"

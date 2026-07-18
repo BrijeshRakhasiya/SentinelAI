@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import clsx from "clsx";
-import { Mic, MicOff, MessageCircle, Send, Sparkles, Volume2, VolumeX, X } from "lucide-react";
+import { Mic, MicOff, Send, Sparkles, Trash2, Volume2, VolumeX, X } from "lucide-react";
 import { useAlertStreamContext } from "../../context/AlertStreamContext";
+import { useChatUI } from "../../context/ChatUIContext";
 import { useChat } from "../../hooks/useChat";
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "../../hooks/useSpeechSynthesis";
@@ -9,9 +10,9 @@ import { ChatMessageBubble } from "./ChatMessageBubble";
 
 export function ChatSidebar() {
   const { alerts, status } = useAlertStreamContext();
-  const { messages, sending, send } = useChat(alerts);
+  const { messages, sending, send, clear } = useChat(alerts);
+  const { open, close } = useChatUI();
 
-  const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [speakEnabled, setSpeakEnabled] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -31,14 +32,20 @@ export function ChatSidebar() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, sending, open]);
 
-  const handleSend = async () => {
-    const text = input;
+  const handleSend = async (override?: string) => {
+    const text = override ?? input;
     if (!text.trim() || sending) return;
     setInput("");
     if (isListening) stopListening();
     const reply = await send(text);
     if (reply && speakEnabled && ttsSupported) speak(reply);
   };
+
+  const quickPrompts = [
+    "Give me a quick summary of this session",
+    "Why were alerts escalated?",
+    "How much analyst time did this save?",
+  ];
 
   const handleMicToggle = () => {
     if (isListening) stopListening();
@@ -52,21 +59,7 @@ export function ChatSidebar() {
 
   return (
     <>
-      {/* Floating toggle -- always visible, app-wide (mounted in AppLayout) */}
-      <button
-        onClick={() => setOpen((o) => !o)}
-        aria-label={open ? "Close SentinelAI assistant" : "Open SentinelAI assistant"}
-        className={clsx(
-          "fixed bottom-5 right-5 z-30 flex h-12 w-12 items-center justify-center rounded-full border shadow-glow transition-all",
-          open
-            ? "border-sentinel-border bg-sentinel-panel text-slate-300"
-            : "border-sentinel-cyan/40 bg-sentinel-cyan text-slate-950 hover:opacity-90"
-        )}
-      >
-        {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
-      </button>
-
-      {/* Collapsible/expandable panel */}
+      {/* Collapsible/expandable panel -- toggled from the "Assistant" icon in the topbar */}
       <div
         className={clsx(
           "fixed bottom-0 right-0 top-16 z-20 flex w-full flex-col border-l border-sentinel-border bg-sentinel-panel/95 backdrop-blur-md transition-transform duration-300 ease-out",
@@ -95,10 +88,19 @@ export function ChatSidebar() {
                 {speakEnabled ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}
               </button>
             )}
+            {messages.length > 0 && (
+              <button
+                onClick={clear}
+                title="Clear conversation"
+                className="rounded-lg border border-sentinel-border p-1.5 text-slate-400 hover:text-red-300"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+            )}
             <button
-              onClick={() => setOpen(false)}
+              onClick={close}
               title="Collapse"
-              className="rounded-lg border border-sentinel-border p-1.5 text-slate-400 hover:text-slate-200 sm:hidden"
+              className="rounded-lg border border-sentinel-border p-1.5 text-slate-400 hover:text-slate-200"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -107,15 +109,28 @@ export function ChatSidebar() {
 
         <div ref={scrollRef} className="scrollbar-thin flex-1 space-y-3 overflow-y-auto px-4 py-4">
           {messages.length === 0 && (
-            <div className="rounded-xl border border-sentinel-border bg-black/20 p-3 text-sm text-slate-400">
-              Try asking: <span className="text-slate-300">&ldquo;Summarize this session&rdquo;</span> or{" "}
-              <span className="text-slate-300">&ldquo;Why was an alert escalated?&rdquo;</span>
-              {sttSupported && (
-                <>
-                  {" "}
-                  Or tap <Mic className="inline h-3 w-3 -translate-y-px text-slate-500" /> and just ask.
-                </>
-              )}
+            <div className="space-y-2.5">
+              <div className="rounded-xl border border-sentinel-border bg-black/20 p-3 text-sm text-slate-400">
+                Ask about this session's alerts, or tap a quick question below.
+                {sttSupported && (
+                  <>
+                    {" "}
+                    You can also tap <Mic className="inline h-3 w-3 -translate-y-px text-slate-500" /> and speak.
+                  </>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {quickPrompts.map((prompt) => (
+                  <button
+                    key={prompt}
+                    onClick={() => handleSend(prompt)}
+                    disabled={sending}
+                    className="rounded-full border border-sentinel-border bg-black/20 px-3 py-1.5 text-xs text-slate-300 transition-colors hover:border-sentinel-cyan/40 hover:text-sentinel-cyan disabled:opacity-50"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -165,7 +180,7 @@ export function ChatSidebar() {
               </button>
             )}
             <button
-              onClick={handleSend}
+              onClick={() => handleSend()}
               disabled={!input.trim() || sending}
               title="Send"
               className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-sentinel-cyan text-slate-950 transition-opacity disabled:opacity-40"

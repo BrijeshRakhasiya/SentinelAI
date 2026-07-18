@@ -21,6 +21,8 @@ services:
         # Leave blank so the frontend calls same-origin relative paths,
         # which nginx.conf proxies to the backend service internally.
         REACT_APP_API_URL: ""
+        REACT_APP_SUPABASE_URL: ${REACT_APP_SUPABASE_URL:-}
+        REACT_APP_SUPABASE_PUBLISHABLE_KEY: ${REACT_APP_SUPABASE_PUBLISHABLE_KEY:-}
     ports:
       - "3000:80"
     depends_on:

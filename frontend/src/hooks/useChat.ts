@@ -1,7 +1,20 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api, ApiError } from "../api/client";
 import type { ChatContext, ChatMessage } from "../api/types";
+import { useAuth } from "./useAuth";
 import type { FeedItem } from "./useAlertStream";
+
+const STORAGE_PREFIX = "sentinelai:chat:";
+
+function loadHistory(key: string | null): ChatMessage[] {
+  if (!key) return [];
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as ChatMessage[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 function buildContext(alerts: FeedItem[]): ChatContext {
   const auto_resolved = alerts.filter((a) => a.decision === "auto_resolve").length;
@@ -27,13 +40,43 @@ interface UseChatResult {
   sending: boolean;
   error: string | null;
   send: (text: string) => Promise<string | null>;
+  clear: () => void;
 }
 
-/** Drives the chat assistant: sends the question + current session context to POST /api/chat. */
+/**
+ * Drives the chat assistant: sends the question + current session context to
+ * POST /api/chat. History is kept per signed-in user (keyed by their
+ * Supabase email) in localStorage, so each analyst sees only their own past
+ * conversation and it survives page reloads.
+ */
 export function useChat(alerts: FeedItem[]): UseChatResult {
+  const { user } = useAuth();
+  const storageKey = user ? `${STORAGE_PREFIX}${user.username}` : null;
+
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load this user's saved history whenever they sign in (or switch accounts).
+  useEffect(() => {
+    setMessages(loadHistory(storageKey));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storageKey]);
+
+  // Persist on every change so a refresh (or reopening the panel) keeps history.
+  useEffect(() => {
+    if (!storageKey) return;
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(messages));
+    } catch {
+      // Storage full/unavailable -- chat still works for the rest of the session.
+    }
+  }, [messages, storageKey]);
+
+  const clear = useCallback(() => {
+    setMessages([]);
+    if (storageKey) localStorage.removeItem(storageKey);
+  }, [storageKey]);
 
   const send = useCallback(
     async (text: string): Promise<string | null> => {
@@ -61,5 +104,5 @@ export function useChat(alerts: FeedItem[]): UseChatResult {
     [messages, alerts, sending]
   );
 
-  return { messages, sending, error, send };
+  return { messages, sending, error, send, clear };
 }
