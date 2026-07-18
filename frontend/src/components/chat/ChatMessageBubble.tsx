@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { Sparkles, User, Volume2 } from "lucide-react";
 import type { ChatMessage } from "../../api/types";
+import { ChatMarkdown } from "./ChatMarkdown";
 
 interface ChatMessageBubbleProps {
   message: ChatMessage;
@@ -23,13 +24,17 @@ export function ChatMessageBubble({ message, onSpeak }: ChatMessageBubbleProps) 
 
       <div
         className={clsx(
-          "group relative max-w-[85%] rounded-xl border px-3 py-2 text-sm leading-relaxed",
+          "group relative max-w-[85%] rounded-xl border px-3 py-2",
           isUser
-            ? "border-sentinel-cyan/20 bg-sentinel-cyan/10 text-slate-100"
-            : "border-sentinel-border bg-black/20 text-slate-300"
+            ? "border-sentinel-cyan/20 bg-sentinel-cyan/10 text-sm leading-relaxed text-slate-100"
+            : "border-sentinel-border bg-black/20"
         )}
       >
-        <p className="whitespace-pre-wrap">{message.content}</p>
+        {isUser ? (
+          <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
+        ) : (
+          <ChatMarkdown content={message.content} />
+        )}
         {!isUser && onSpeak && (
           <button
             onClick={onSpeak}

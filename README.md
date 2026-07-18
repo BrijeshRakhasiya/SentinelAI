@@ -40,3 +40,37 @@ That is the whole scope. No real network integration is needed for the demo. We 
 
 ## Core Message
 SentinelAI is not about replacing analysts. It is about reducing noise, preserving trust, and helping teams focus on the alerts that actually need human judgment.
+
+## Local Development
+
+### Demo login
+
+These credentials are for local development only: 
+
+- Username: `admin`
+- Password: `SentinelAI2026!`
+
+Do not reuse or deploy these credentials in production. The backend stores the
+password as a bcrypt hash in the git-ignored `backend/.env` file.
+
+### Run the backend
+
+```powershell
+cd backend
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --port 8000
+```
+
+FastAPI is available at http://127.0.0.1:8000 and Swagger UI at
+http://127.0.0.1:8000/docs.
+
+### Run the frontend
+
+In a second terminal:
+
+```powershell
+cd frontend
+npm install
+npm start
+```
+
+Open http://localhost:3000 and sign in with the local demo credentials above.

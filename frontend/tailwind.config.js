@@ -31,10 +31,20 @@ module.exports = {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.35" },
         },
+        "thinking-dot": {
+          "0%, 80%, 100%": { transform: "translateY(0)", opacity: "0.35" },
+          "40%": { transform: "translateY(-4px)", opacity: "1" },
+        },
+        "thinking-shimmer": {
+          "0%": { transform: "translateX(-120%)" },
+          "100%": { transform: "translateX(320%)" },
+        },
       },
       animation: {
         "slide-in": "slide-in 0.35s ease-out",
         "pulse-dot": "pulse-dot 1.6s ease-in-out infinite",
+        "thinking-dot": "thinking-dot 1.2s ease-in-out infinite",
+        "thinking-shimmer": "thinking-shimmer 1.8s ease-in-out infinite",
       },
     },
   },

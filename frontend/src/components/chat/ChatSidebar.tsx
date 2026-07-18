@@ -6,7 +6,9 @@ import { useChatUI } from "../../context/ChatUIContext";
 import { useChat } from "../../hooks/useChat";
 import { useSpeechRecognition } from "../../hooks/useSpeechRecognition";
 import { useSpeechSynthesis } from "../../hooks/useSpeechSynthesis";
+import { stripMarkdownForSpeech } from "../../lib/markdown";
 import { ChatMessageBubble } from "./ChatMessageBubble";
+import { ChatThinkingIndicator } from "./ChatThinkingIndicator";
 
 export function ChatSidebar() {
   const { alerts, status } = useAlertStreamContext();
@@ -38,7 +40,7 @@ export function ChatSidebar() {
     setInput("");
     if (isListening) stopListening();
     const reply = await send(text);
-    if (reply && speakEnabled && ttsSupported) speak(reply);
+    if (reply && speakEnabled && ttsSupported) speak(stripMarkdownForSpeech(reply));
   };
 
   const quickPrompts = [
@@ -138,16 +140,11 @@ export function ChatSidebar() {
             <ChatMessageBubble
               key={index}
               message={message}
-              onSpeak={ttsSupported ? () => speak(message.content) : undefined}
+              onSpeak={ttsSupported ? () => speak(stripMarkdownForSpeech(message.content)) : undefined}
             />
           ))}
 
-          {sending && (
-            <div className="flex items-center gap-2 pl-8 text-xs text-slate-500">
-              <span className="h-1.5 w-1.5 animate-pulse-dot rounded-full bg-sentinel-cyan" />
-              Thinking…
-            </div>
-          )}
+          {sending && <ChatThinkingIndicator />}
         </div>
 
         <div className="border-t border-sentinel-border p-3">
