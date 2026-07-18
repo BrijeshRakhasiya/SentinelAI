@@ -67,6 +67,12 @@ export const api = {
     }),
 
   integrationStatus: () => request<IntegrationStatusResponse>("/api/integrations/status"),
+
+  setIntegrationSource: (source: string) =>
+    request<IntegrationStatusResponse>("/api/integrations/source", {
+      method: "POST",
+      body: JSON.stringify({ source }),
+    }),
 };
 
 /**

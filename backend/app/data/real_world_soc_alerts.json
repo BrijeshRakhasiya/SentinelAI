@@ -268,5 +268,275 @@
     "title": "Managed device temporarily out of compliance",
     "description": "Laptop missed one disk encryption status check but reported compliant again on the next sync 12 minutes later.",
     "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-031",
+    "source": "GitHub Advanced Security",
+    "severity": "high",
+    "category": "secrets_exposure",
+    "title": "Live cloud credential committed to a public repository",
+    "description": "Secret scanning flagged an AWS access key with production IAM permissions committed to a public fork of the payments-service repo. The key has not yet been rotated.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-032",
+    "source": "GitLab CI/CD",
+    "severity": "high",
+    "category": "supply_chain",
+    "title": "Unapproved dependency added to release pipeline",
+    "description": "A new npm package was added to the deploy pipeline for the checkout service hours before a release, published by an account with no prior history and no code review approval.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-033",
+    "source": "Falco (Kubernetes)",
+    "severity": "high",
+    "category": "container_escape",
+    "title": "Container process attempted to access host filesystem",
+    "description": "A pod in the staging namespace executed a shell that attempted to mount the host's root filesystem. Image was pulled from an internal registry but is not on the approved base-image list.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-034",
+    "source": "Wiz Cloud Security",
+    "severity": "medium",
+    "category": "cloud_misconfiguration",
+    "title": "IAM role grants overly broad S3 permissions",
+    "description": "A newly created IAM role for the analytics team includes s3:* on all buckets instead of the requested read-only scope on two buckets. No production incident has occurred yet.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-035",
+    "source": "Snyk",
+    "severity": "medium",
+    "category": "vulnerability",
+    "title": "Critical CVE detected in production container image",
+    "description": "A base image running in production includes a library with a critical remote-code-execution CVE disclosed 2 days ago. A patched image is available upstream.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-036",
+    "source": "Darktrace",
+    "severity": "high",
+    "category": "lateral_movement",
+    "title": "Unusual internal SMB scanning between subnets",
+    "description": "A finance-floor workstation initiated SMB connection attempts to over 40 hosts in the engineering subnet within 3 minutes, a pattern with no prior baseline for this device.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-037",
+    "source": "Cisco Umbrella",
+    "severity": "medium",
+    "category": "dns",
+    "title": "DNS query to typosquatted domain of internal SSO provider",
+    "description": "A workstation queried 'corp-0kta-login.com', a lookalike domain registered last week, shortly after the user received an email referencing a login issue.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-038",
+    "source": "Auth0",
+    "severity": "low",
+    "category": "credential_stuffing",
+    "title": "Credential stuffing attempt blocked by bot detection",
+    "description": "Over 400 login attempts using leaked credential pairs were blocked in 10 minutes by automated bot-detection rules. No account reached a successful authentication.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-039",
+    "source": "Mimecast",
+    "severity": "high",
+    "category": "business_email_compromise",
+    "title": "Invoice fraud attempt impersonating known vendor",
+    "description": "An email impersonating the finance contact at an existing vendor requested an urgent change to bank routing details. Reply-to address does not match the vendor's verified domain.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-040",
+    "source": "Jamf",
+    "severity": "high",
+    "category": "device_compliance",
+    "title": "Managed Mac reports jailbreak/tamper indicators",
+    "description": "A company-managed MacBook reported MDM profile removal followed by installation of a known jailbreak tool, then went offline from device management.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-041",
+    "source": "Netskope CASB",
+    "severity": "medium",
+    "category": "oauth_risk",
+    "title": "Third-party OAuth app granted broad mailbox access",
+    "description": "A user granted a low-reputation third-party app full read/send access to their corporate mailbox via 'Sign in with Google'. The app is not on the approved SaaS list.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-042",
+    "source": "Varonis",
+    "severity": "high",
+    "category": "ransomware_precursor",
+    "title": "Mass file access anomaly ahead of typical ransomware pattern",
+    "description": "A service account began sequentially opening and closing thousands of files across two file shares over 90 seconds, matching a known ransomware staging pattern rather than an approved backup job.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-043",
+    "source": "Cloudflare",
+    "severity": "low",
+    "category": "ddos",
+    "title": "Volumetric DDoS attempt auto-mitigated at edge",
+    "description": "A short-lived volumetric attack against the public marketing site was automatically absorbed by edge rate-limiting; origin servers saw no traffic increase and no downtime occurred.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-044",
+    "source": "PagerDuty",
+    "severity": "low",
+    "category": "false_positive",
+    "title": "Synthetic monitoring alert during approved maintenance window",
+    "description": "An uptime check fired for the billing API, but the outage window matches an approved change ticket for a scheduled database migration.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-045",
+    "source": "Slack Enterprise DLP",
+    "severity": "medium",
+    "category": "data_access",
+    "title": "Customer PII pasted into a public Slack channel",
+    "description": "A support engineer pasted a spreadsheet snippet containing customer emails and phone numbers into a public support channel; the message was auto-flagged and not yet deleted.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-046",
+    "source": "Internal AI Gateway",
+    "severity": "medium",
+    "category": "prompt_injection",
+    "title": "Prompt injection attempt against internal support assistant",
+    "description": "A support ticket contained hidden text instructing the internal AI assistant to ignore its guardrails and reveal other customers' account data. The assistant refused, but the attempt was logged.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-047",
+    "source": "Vendor Risk Monitor",
+    "severity": "high",
+    "category": "third_party_risk",
+    "title": "Third-party SaaS vendor disclosed a data breach",
+    "description": "A vendor used for customer support ticketing sent a breach notification indicating access-token exposure. The vendor is integrated with the production support queue.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-048",
+    "source": "Physical Access Control",
+    "severity": "medium",
+    "category": "physical_security",
+    "title": "Badge used at two office locations within an implausible time window",
+    "description": "An employee's badge was used to enter the Mumbai office and, 12 minutes later, the Bengaluru office 1,000 km away. No travel record or badge-sharing exception is on file.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-049",
+    "source": "Endpoint DLP",
+    "severity": "low",
+    "category": "data_access",
+    "title": "Confidential document printed matches normal role activity",
+    "description": "A legal team member printed a confidential contract draft after hours; the user's role and document type match established quarter-end contract review patterns.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-050",
+    "source": "Browser Isolation Platform",
+    "severity": "high",
+    "category": "malware",
+    "title": "Malicious browser extension installed on managed endpoint",
+    "description": "A browser extension installed outside the approved store manifest was observed exfiltrating form-fill data to an external domain before being auto-quarantined by the isolation agent.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-051",
+    "source": "API Gateway Analytics",
+    "severity": "low",
+    "category": "api_abuse",
+    "title": "Spike in API key usage matches confirmed partner integration launch",
+    "description": "A partner's API key exceeded its historical rate limit by 6x, but the spike coincides with a scheduled go-live for a new integration confirmed by the partnerships team.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-052",
+    "source": "Voice Security Monitor",
+    "severity": "high",
+    "category": "social_engineering",
+    "title": "Suspected synthetic-voice vishing call to finance team",
+    "description": "A finance analyst received a call using a voice closely matching the CFO requesting an urgent wire transfer. Call originated from a VoIP number never associated with the CFO, and the request bypassed normal approval channels.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-053",
+    "source": "GitHub Advanced Security",
+    "severity": "high",
+    "category": "supply_chain",
+    "title": "Unauthorized force-push to protected release branch",
+    "description": "The 'release/prod' branch, which requires two approving reviews, was force-pushed using an admin override outside business hours, rewriting the last 6 commits.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-054",
+    "source": "Patch Management",
+    "severity": "low",
+    "category": "vulnerability",
+    "title": "Critical patch auto-remediated within SLA after missed window",
+    "description": "A workstation missed its scheduled patch window due to being offline, then automatically installed the critical security update on next check-in, within the 48-hour SLA.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-055",
+    "source": "Microsoft Sentinel",
+    "severity": "medium",
+    "category": "insider_threat",
+    "title": "Departing employee downloaded unusual volume of sales data",
+    "description": "An employee who submitted resignation notice 2 days ago downloaded the entire regional sales pipeline export, a report they do not normally access.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-056",
+    "source": "SentinelOne",
+    "severity": "high",
+    "category": "fileless_malware",
+    "title": "Fileless malware injected into legitimate system process",
+    "description": "A reflective DLL injection was detected into explorer.exe on a finance workstation moments after a macro-enabled document was opened from an email attachment.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-057",
+    "source": "Okta",
+    "severity": "low",
+    "category": "device_compliance",
+    "title": "Push MFA approved from newly re-provisioned corporate device",
+    "description": "A user approved a push MFA prompt from a device that was freshly re-imaged by IT that morning per an open helpdesk ticket; device posture and network match expected values.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-058",
+    "source": "Zscaler",
+    "severity": "medium",
+    "category": "command_and_control",
+    "title": "DNS tunneling pattern detected on guest network segment",
+    "description": "A device on the guest Wi-Fi segment issued abnormally long, high-entropy TXT record queries at a steady interval, consistent with DNS tunneling rather than normal browsing.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-059",
+    "source": "Twilio Trust Hub",
+    "severity": "medium",
+    "category": "account_takeover",
+    "title": "SIM-swap indicator flagged during customer support verification",
+    "description": "A customer support call requested an account recovery for a number that was ported to a new carrier 40 minutes earlier, a pattern strongly correlated with SIM-swap fraud.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-060",
+    "source": "ServiceNow Change Monitor",
+    "severity": "low",
+    "category": "change_management",
+    "title": "Kubernetes RBAC change matches approved infrastructure ticket",
+    "description": "A new ClusterRoleBinding granting deploy permissions to the CI service account was applied during the maintenance window and matches change ticket INF-4471.",
+    "expected_decision": "auto_resolve"
   }
 ]

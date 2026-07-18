@@ -26,3 +26,7 @@ class IntegrationStatusResponse(BaseModel):
     active_source_label: str
     connector: Optional[ConnectorInfo] = None
     available_sources: list[AvailableSource]
+
+
+class SetAlertSourceRequest(BaseModel):
+    source: str

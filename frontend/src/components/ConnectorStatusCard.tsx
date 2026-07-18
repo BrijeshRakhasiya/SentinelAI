@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import clsx from "clsx";
 import { RefreshCw, Satellite } from "lucide-react";
 import { api } from "../api/client";
 import type { ConnectorStatusValue, IntegrationStatusResponse } from "../api/types";
+import { useAlertStreamContext } from "../context/AlertStreamContext";
 import { StatusPill, type PillTone } from "./StatusPill";
 import { timeAgo } from "../lib/format";
 
@@ -21,11 +23,17 @@ const SOURCE_LABEL: Record<string, string> = {
 const REFRESH_INTERVAL_MS = 30_000;
 
 /** Live connector/data-source status for the dashboard, backed by
- * GET /api/integrations/status -- see MCP_CREATION_PLAN.md "Phase 4". */
+ * GET /api/integrations/status -- see MCP_CREATION_PLAN.md "Phase 4".
+ * Also lets an analyst switch the active source at runtime via
+ * POST /api/integrations/source, then restarts the live feed so the
+ * dashboard immediately reflects the new source. */
 export function ConnectorStatusCard() {
   const [data, setData] = useState<IntegrationStatusResponse | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [switching, setSwitching] = useState<string | null>(null);
+  const [justSwitched, setJustSwitched] = useState(false);
+  const { restart } = useAlertStreamContext();
 
   const load = async () => {
     try {
@@ -46,6 +54,23 @@ export function ConnectorStatusCard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const switchSource = async (sourceId: string) => {
+    if (!data || sourceId === data.alert_source || switching) return;
+    setSwitching(sourceId);
+    try {
+      const res = await api.setIntegrationSource(sourceId);
+      setData(res);
+      setError(false);
+      restart(); // re-open the SSE stream so the dashboard/chat pick up the new source immediately
+      setJustSwitched(true);
+      window.setTimeout(() => setJustSwitched(false), 4000);
+    } catch {
+      setError(true);
+    } finally {
+      setSwitching(null);
+    }
+  };
+
   const connector = data?.connector;
   const statusMeta = connector ? STATUS_META[connector.status] : null;
 
@@ -58,17 +83,48 @@ export function ConnectorStatusCard() {
           </div>
           <div>
             <h3 className="text-sm font-semibold text-slate-100">Active Alert Source</h3>
-            <p className="text-xs text-slate-500">Live from the backend's ALERT_SOURCE configuration</p>
+            <p className="text-xs text-slate-500">Switch sources live -- no backend restart needed</p>
           </div>
         </div>
-        <button
-          onClick={load}
-          title="Refresh"
-          className="rounded-lg border border-sentinel-border p-1.5 text-slate-400 transition-colors hover:text-sentinel-cyan"
-        >
-          <RefreshCw className={loading ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} />
-        </button>
+        <div className="flex items-center gap-2">
+          {data && (
+            <div className="flex flex-wrap items-center gap-1 rounded-full border border-sentinel-border bg-black/20 p-1">
+              {data.available_sources.map((s) => {
+                const active = s.id === data.alert_source;
+                return (
+                  <button
+                    key={s.id}
+                    onClick={() => switchSource(s.id)}
+                    disabled={switching !== null}
+                    title={`Switch to ${s.label}`}
+                    className={clsx(
+                      "rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors disabled:opacity-50",
+                      active
+                        ? "bg-sentinel-cyan/15 text-sentinel-cyan"
+                        : "text-slate-400 hover:text-slate-200"
+                    )}
+                  >
+                    {switching === s.id ? "Switching…" : s.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <button
+            onClick={load}
+            title="Refresh"
+            className="rounded-lg border border-sentinel-border p-1.5 text-slate-400 transition-colors hover:text-sentinel-cyan"
+          >
+            <RefreshCw className={loading ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} />
+          </button>
+        </div>
       </div>
+
+      {justSwitched && (
+        <p className="mb-3 text-xs text-sentinel-cyan">
+          Switched source and restarted the live feed — check the Dashboard to see it stream in.
+        </p>
+      )}
 
       {error && !data ? (
         <p className="text-sm text-slate-500">Couldn't reach the backend to check connector status.</p>
@@ -106,14 +162,6 @@ export function ConnectorStatusCard() {
 
       {connector?.error && (
         <p className="mt-3 text-xs text-red-300">Connector error: {connector.error}</p>
-      )}
-
-      {data && data.alert_source !== "mcp" && (
-        <p className="mt-3 text-xs text-slate-500">
-          Switch the backend's <code className="rounded bg-black/30 px-1 py-0.5 font-mono">ALERT_SOURCE</code> env var to{" "}
-          <code className="rounded bg-black/30 px-1 py-0.5 font-mono">mcp</code> to stream live alerts through the AWS
-          GuardDuty MCP connector instead.
-        </p>
       )}
     </div>
   );

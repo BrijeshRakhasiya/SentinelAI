@@ -8,12 +8,11 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import StreamingResponse
 
-from app.config import settings
 from app.dependencies import get_current_user
 from app.models.db import SessionLocal
 from app.schemas.alert import Alert
 from app.schemas.triage import TriageResult
-from app.services.alert_sources import get_alert_source
+from app.services.alert_sources import get_alert_source, get_current_mode
 from app.services.mcp_client import mcp_client
 from app.services.triage import triage_alert
 
@@ -36,7 +35,7 @@ def _triage_with_own_session(alert: Alert) -> TriageResult:
 async def _event_stream(request: Request) -> AsyncGenerator[str, None]:
     source = get_alert_source()
     alerts = source.get_alerts()
-    is_mcp = settings.alert_source_normalized == "mcp"
+    is_mcp = get_current_mode() == "mcp"
 
     for index, alert in enumerate(alerts):
         if await request.is_disconnected():
