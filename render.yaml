@@ -10,6 +10,16 @@
 # REACT_APP_API_URL (frontend) and CORS_ORIGINS (backend) for real --
 # Render appends a random suffix to the hostname if "sentinelai-backend"
 # / "sentinelai-frontend" are already taken globally.
+#
+# IMPORTANT -- SPA routing: the `routes: rewrite` rule below only takes
+# effect if this static site was actually created *from this Blueprint*.
+# If your live site was created manually via Dashboard -> New -> Static
+# Site (names won't match "sentinelai-frontend" if so), Render never reads
+# this file for it. In that case add the same rule by hand instead:
+# Dashboard -> your static site -> Settings -> Redirects/Rewrites -> Add
+# Rule -> Source "/*", Destination "/index.html", Action "Rewrite".
+# Render does NOT support a Netlify-style `_redirects` file -- only this
+# Dashboard config or a Blueprint `routes` entry works.
 
 services:
   - type: web
