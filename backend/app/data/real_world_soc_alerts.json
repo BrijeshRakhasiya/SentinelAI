@@ -1,0 +1,272 @@
+[
+  {
+    "id": "RW-001",
+    "source": "Microsoft Sentinel",
+    "severity": "high",
+    "category": "credential_theft",
+    "title": "Multiple failed MFA attempts followed by successful login",
+    "description": "User finance.manager@company.com received 18 failed MFA prompts from an unfamiliar IP, followed by a successful login from a new device in another country.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-002",
+    "source": "CrowdStrike Falcon",
+    "severity": "high",
+    "category": "execution",
+    "title": "Suspicious PowerShell execution with encoded command",
+    "description": "powershell.exe executed with -EncodedCommand from a workstation. Decoded content attempted to download and run a script from an external domain.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-003",
+    "source": "Splunk SIEM",
+    "severity": "medium",
+    "category": "authentication",
+    "title": "Login from unusual location",
+    "description": "Employee logged in from Singapore after normally authenticating only from India. MFA was successful, but the device fingerprint is new.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-004",
+    "source": "AWS GuardDuty",
+    "severity": "high",
+    "category": "cloud_threat",
+    "title": "EC2 instance communicating with known malicious IP",
+    "description": "An EC2 instance initiated outbound HTTPS traffic to an IP address associated with command-and-control infrastructure.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-005",
+    "source": "Microsoft Defender for Endpoint",
+    "severity": "low",
+    "category": "false_positive",
+    "title": "Known IT inventory tool flagged as suspicious",
+    "description": "An internal asset inventory executable triggered suspicious behavior detection, but the binary is signed and matches the approved software hash.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-006",
+    "source": "Proofpoint Email Security",
+    "severity": "medium",
+    "category": "phishing",
+    "title": "User reported suspicious email",
+    "description": "A user reported an email containing a link to a newly registered domain. The sender domain fails DMARC alignment.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-007",
+    "source": "Okta",
+    "severity": "low",
+    "category": "authentication",
+    "title": "Repeated failed login from known employee device",
+    "description": "User failed password login 3 times and then successfully authenticated from the same trusted laptop and office IP.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-008",
+    "source": "Suricata IDS",
+    "severity": "high",
+    "category": "exfiltration",
+    "title": "Large outbound data transfer to unknown host",
+    "description": "Database server transferred 9.8 GB to an external IP over HTTPS outside business hours. Destination is not in the approved vendor list.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-009",
+    "source": "Azure AD Identity Protection",
+    "severity": "medium",
+    "category": "identity_risk",
+    "title": "Risky sign-in from anonymous proxy",
+    "description": "User authenticated successfully from an IP associated with an anonymous proxy service. The user normally signs in from a managed corporate device.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-010",
+    "source": "QRadar SIEM",
+    "severity": "low",
+    "category": "configuration",
+    "title": "Internal development server running outdated TLS",
+    "description": "An internal-only development server still accepts TLS 1.1. The host is isolated from production data and has no internet exposure.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-011",
+    "source": "Palo Alto Firewall",
+    "severity": "medium",
+    "category": "network",
+    "title": "Outbound connection to newly observed domain",
+    "description": "Workstation initiated HTTPS traffic to a domain registered 5 days ago. Domain is not categorized and has no known business owner.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-012",
+    "source": "DLP Monitor",
+    "severity": "medium",
+    "category": "data_access",
+    "title": "Large file upload to personal cloud storage",
+    "description": "User uploaded 1.8 GB of files to a personal Google Drive account. Files include spreadsheet names matching customer export patterns.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-013",
+    "source": "Microsoft Defender for Cloud",
+    "severity": "high",
+    "category": "cloud_misconfiguration",
+    "title": "Public storage bucket containing sensitive file names",
+    "description": "A cloud storage bucket was changed to public-read. Object names include payroll_export and customer_backup references.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-014",
+    "source": "EDR",
+    "severity": "high",
+    "category": "ransomware",
+    "title": "Mass file rename with ransomware-like extension",
+    "description": "Endpoint renamed 2,900 files in 5 minutes and created recovery note files in multiple directories. Shadow copy deletion was attempted and blocked.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-015",
+    "source": "Email Gateway",
+    "severity": "low",
+    "category": "phishing",
+    "title": "Marketing email reported as phishing by one user",
+    "description": "One user reported a vendor newsletter as phishing. SPF, DKIM, and DMARC passed, links point to the vendor's legitimate domain, and no other users reported it.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-016",
+    "source": "Windows Event Logs",
+    "severity": "medium",
+    "category": "privilege_escalation",
+    "title": "New local administrator account created",
+    "description": "A local admin account was created on a file server after business hours. No matching change ticket was found.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-017",
+    "source": "Zeek Network Monitor",
+    "severity": "medium",
+    "category": "command_and_control",
+    "title": "Periodic beacon-like outbound traffic",
+    "description": "A workstation contacted the same external host every 60 seconds for 4 hours. Destination has low reputation but is not present on known blocklists.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-018",
+    "source": "ServiceNow Change Monitor",
+    "severity": "low",
+    "category": "change_management",
+    "title": "Firewall rule change matches approved ticket",
+    "description": "A firewall rule was added during the approved maintenance window and matches change ticket CHG-8841.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-019",
+    "source": "Database Activity Monitor",
+    "severity": "medium",
+    "category": "data_access",
+    "title": "Service account reading above baseline",
+    "description": "Application service account read 15 times its usual daily row count from the customer table. A batch export was scheduled, but normally uses a different service account.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-020",
+    "source": "Google Workspace",
+    "severity": "high",
+    "category": "exfiltration",
+    "title": "Mass mailbox export after MFA method change",
+    "description": "User initiated export of executive mailbox data 4 hours after changing MFA phone number from an unfamiliar IP address.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-021",
+    "source": "Nessus Vulnerability Scanner",
+    "severity": "low",
+    "category": "vulnerability",
+    "title": "Scheduled vulnerability scan detected as port scan",
+    "description": "Sequential TCP connections were generated by the approved scanner during the weekly scanning window.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-022",
+    "source": "EDR",
+    "severity": "medium",
+    "category": "policy_violation",
+    "title": "Unsigned binary executed from Downloads folder",
+    "description": "Unsigned executable launched from a user's Downloads folder. No malware signature matched, but the file was downloaded from an untrusted domain.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-023",
+    "source": "Identity Provider",
+    "severity": "low",
+    "category": "authentication",
+    "title": "VPN impossible travel false positive",
+    "description": "User appeared to log in from two countries within 10 minutes, but the second IP belongs to the corporate VPN egress range.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-024",
+    "source": "Web Application Firewall",
+    "severity": "medium",
+    "category": "web_attack",
+    "title": "SQL injection pattern blocked",
+    "description": "WAF blocked multiple requests containing SQL injection payloads against the login endpoint. Source IP belongs to a residential ISP and attempted several paths.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-025",
+    "source": "EDR",
+    "severity": "high",
+    "category": "intrusion",
+    "title": "Web shell signature detected on public server",
+    "description": "A file matching known web shell patterns was created in a public web upload directory. Web server process spawned a command shell shortly afterward.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-026",
+    "source": "DNS Monitor",
+    "severity": "low",
+    "category": "dns",
+    "title": "New SaaS domain queried from onboarding channel",
+    "description": "Workstation queried a newly registered SaaS help domain after the user clicked a link posted by HR in the onboarding channel.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-027",
+    "source": "CloudTrail",
+    "severity": "high",
+    "category": "cloud_access",
+    "title": "Access key used from unfamiliar country",
+    "description": "A production IAM access key was used from a country never seen before for this account. The action listed S3 buckets and security groups.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-028",
+    "source": "Endpoint DLP",
+    "severity": "low",
+    "category": "data_access",
+    "title": "Large print job from finance user",
+    "description": "Finance user printed a 280-page quarterly report during month-end close. Document template and user role match expected business activity.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-029",
+    "source": "SIEM Correlation Rule",
+    "severity": "high",
+    "category": "lateral_movement",
+    "title": "DCSync-like replication request from workstation",
+    "description": "A non-domain-controller workstation issued replication-style requests shortly after a privileged account logged in interactively.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-030",
+    "source": "MDM",
+    "severity": "low",
+    "category": "device_compliance",
+    "title": "Managed device temporarily out of compliance",
+    "description": "Laptop missed one disk encryption status check but reported compliant again on the next sync 12 minutes later.",
+    "expected_decision": "auto_resolve"
+  }
+]
