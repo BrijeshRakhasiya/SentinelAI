@@ -27,7 +27,7 @@ By demo time, a judge or teammate should be able to:
 |------|------|--------------|
 | **AI Product Manager (you)** | Scope, demo script, alert scenarios, pitch deck, judge Q&A, prioritization | Writing all the code |
 | **Backend engineer** | FastAPI, agent logic, SSE stream, auth, SQLite audit log, Render deploy | UI polish |
-| **Frontend engineer** | Next.js dashboard, alert feed, charts, login, `/integration` page | AI prompt tuning |
+| **Frontend engineer** | React (CRA) dashboard, alert feed, charts, login, `/integration` page | AI prompt tuning |
 | **Full-stack / floater** | Docker Compose, env setup, glue work, bug fixes, demo rehearsal | New features outside scope |
 
 If the team is smaller, combine roles — but **one person must own the demo script and one must own deployment**.
@@ -70,7 +70,7 @@ FastAPI backend (main.py) ──→ Gemini agent (agent.py)
         ↓                           ↓
    SSE stream              JSON: decision, confidence, reasoning
         ↓                           ↓
-Next.js dashboard         Server rule + audit log (database.py)
+React dashboard           Server rule + audit log (database.py)
    AlertFeed                    cache.py fallback
    AnalystDashboard
 ```
@@ -80,7 +80,7 @@ Next.js dashboard         Server rule + audit log (database.py)
 | Layer | Files |
 |-------|-------|
 | Backend | `main.py`, `agent.py`, `alerts.py`, `cache.py`, `database.py`, `auth.py`, `backup_responses.json` |
-| Frontend | `app/page.tsx`, `app/login/page.tsx`, `app/integration/page.tsx`, `components/AlertFeed.tsx`, `components/AlertCard.tsx`, `components/AnalystDashboard.tsx`, `components/ExplainerBanner.tsx` |
+| Frontend | `src/pages/LoginPage.tsx`, `DashboardPage.tsx`, `IntegrationPage.tsx`, `components/AlertFeed.tsx`, `AlertCard.tsx`, `AnalystDashboard.tsx`, `ExplainerBanner.tsx` |
 | Infra | `docker-compose.yml`, `Dockerfile` (backend + frontend), `.env.example` |
 
 Full technical context: see [context.md](./context.md).
@@ -102,7 +102,7 @@ Adjust hours to your hackathon length. Priorities are fixed — do Phase 1 befor
 - [ ] Log every triage result to SQLite (`database.py`)
 
 **Frontend**
-- [ ] Scaffold Next.js + Tailwind
+- [ ] Scaffold Create React App + TypeScript + Tailwind
 - [ ] Build `AlertCard` — show alert title, severity, decision badge, reasoning
 - [ ] Build basic `AlertFeed` (polling is OK initially; SSE comes in Phase 2)
 
@@ -256,7 +256,7 @@ docker compose up --build
 ### Deploy checklist
 
 - [ ] Backend env vars set on Render
-- [ ] Frontend `NEXT_PUBLIC_API_URL` points to backend
+- [ ] Frontend `REACT_APP_API_URL` points to backend
 - [ ] CORS allows frontend origin
 - [ ] `USE_CACHE=true` on production for demo day
 - [ ] Warm up both services 5 minutes before presenting
@@ -307,7 +307,7 @@ PM ends every standup with:
 | Resource | Location |
 |----------|----------|
 | Product overview | [README.md](./README.md) |
-| Technical deep-dive | [context.md](./context.md) |
+| Technical architecture | [ARCHITECTURE.md](./ARCHITECTURE.md) |
 | Security policy | [SECURITY.md](./SECURITY.md) |
 | GitHub repo | https://github.com/BrijeshRakhasiya/SentinelAI |
 | Backend (when deployed) | https://sentinelai-backend-mtxy.onrender.com |
