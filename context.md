@@ -109,11 +109,3 @@ retain full IP, iDEX provides grant funding (up to ₹1.5 crore, or up to
 - SQLite audit log is fine for demo scale, would move to Postgres for
   production multi-instance deployment
 
-## Live URLs
-
-- Backend: `https://sentinelai-backend-mtxy.onrender.com`
-- Frontend: (confirm exact URL from Render's `sentinelai-frontend` service)
-
-## Repo
-
-`https://github.com/BrijeshRakhasiya/SentinelAI`
