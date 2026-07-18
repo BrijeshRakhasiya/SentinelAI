@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Webhook,
 } from "lucide-react";
+import { ConnectorStatusCard } from "../components/ConnectorStatusCard";
 
 const ingestionSources = ["Splunk", "IBM QRadar", "Microsoft Sentinel", "CrowdStrike"];
 const mcpSources = ["AWS GuardDuty", "Microsoft Sentinel", "Splunk", "CrowdStrike", "Okta", "Proofpoint"];
@@ -65,6 +66,8 @@ export function IntegrationPage() {
           live alerts from real security platforms.
         </p>
       </div>
+
+      <ConnectorStatusCard />
 
       <div className="mb-8 overflow-x-auto rounded-2xl border border-sentinel-border bg-sentinel-panel/40 p-5">
         <div className="flex min-w-[640px] items-center justify-between gap-2 text-center">

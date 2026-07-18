@@ -11,7 +11,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.config import settings
 from app.models.db import init_db
-from app.routes import chat, stats, stream
+from app.routes import chat, integrations, stats, stream
 from app.security import SecurityHeadersMiddleware, limiter
 
 logging.basicConfig(level=logging.INFO)
@@ -72,6 +72,7 @@ def create_app() -> FastAPI:
     app.include_router(stream.router)
     app.include_router(stats.router)
     app.include_router(chat.router)
+    app.include_router(integrations.router)
 
     @app.get("/health", tags=["health"])
     def health() -> dict:

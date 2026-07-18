@@ -7,3 +7,4 @@ psycopg2-binary==2.9.10
 google-genai==1.2.0
 slowapi==0.1.9
 python-multipart==0.0.20
+pytest==8.3.4

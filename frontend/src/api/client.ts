@@ -1,5 +1,5 @@
 import { supabase } from "../lib/supabaseClient";
-import type { ChatContext, ChatMessage, ChatResponse, StatsResponse } from "./types";
+import type { ChatContext, ChatMessage, ChatResponse, IntegrationStatusResponse, StatsResponse } from "./types";
 
 /**
  * Empty string means "same origin, relative paths" -- in dev that is
@@ -65,6 +65,8 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ message, history, context }),
     }),
+
+  integrationStatus: () => request<IntegrationStatusResponse>("/api/integrations/status"),
 };
 
 /**

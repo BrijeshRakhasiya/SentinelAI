@@ -35,6 +35,17 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = "sqlite:///./sentinelai.db"
 
+    # Alert ingestion source (see MCP_CREATION_PLAN.md):
+    #   demo            -> curated synthetic alerts (app/data/alerts.py)
+    #   real_world_json -> static real-world-shaped feed (app/data/real_world_soc_alerts.json)
+    #   mcp             -> live MCP connector (AWS GuardDuty by default)
+    ALERT_SOURCE: str = "demo"
+
+    @property
+    def alert_source_normalized(self) -> str:
+        value = self.ALERT_SOURCE.strip().lower()
+        return value if value in ("demo", "real_world_json", "mcp") else "demo"
+
     @property
     def is_production(self) -> bool:
         return self.ENVIRONMENT.lower() == "production"

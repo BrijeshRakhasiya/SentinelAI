@@ -17,6 +17,9 @@ export interface Alert {
   source: string;
   severity: Severity;
   category: string;
+  /** Present when the alert was normalized from an external platform (MCP, JSON feed). */
+  timestamp?: string | null;
+  raw_reference?: string | null;
 }
 
 export interface TriageResult {
@@ -63,4 +66,27 @@ export interface ChatContext {
 
 export interface ChatResponse {
   reply: string;
+}
+
+export type ConnectorStatusValue = "connected" | "degraded" | "offline" | "not_configured";
+
+export interface ConnectorInfo {
+  source: string;
+  name: string;
+  status: ConnectorStatusValue;
+  last_sync: string | null;
+  alerts_fetched: number;
+  error: string | null;
+}
+
+export interface AvailableSource {
+  id: string;
+  label: string;
+}
+
+export interface IntegrationStatusResponse {
+  alert_source: string;
+  active_source_label: string;
+  connector: ConnectorInfo | null;
+  available_sources: AvailableSource[];
 }
