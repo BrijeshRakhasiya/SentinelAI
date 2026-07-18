@@ -1,0 +1,152 @@
+{
+  "ALT-001": {
+    "decision": "auto_resolve",
+    "confidence": 95,
+    "reasoning": "Source IP 185.220.101.34 is registered to the contracted Qualys scanning vendor and the scan window matches the weekly scheduled assessment. Sequential port sweep with no follow-up exploitation traffic. This is routine authorized scanning.",
+    "suggested_action": "Close as expected activity; tag the scanner IP range in the IDS allowlist to reduce future noise."
+  },
+  "ALT-002": {
+    "decision": "auto_resolve",
+    "confidence": 96,
+    "reasoning": "Two identical 'new device' events 400ms apart with the same IP, browser fingerprint, and session token. This is event duplication from the SSO connector, not two logins. No credential risk indicators present.",
+    "suggested_action": "Close as duplicate; file a low-priority ticket for the SSO connector's event dedup bug."
+  },
+  "ALT-003": {
+    "decision": "auto_resolve",
+    "confidence": 91,
+    "reasoning": "AssetInventory.exe is signed with the internal IT certificate and its hash matches the whitelist entry from deployment ticket CHG-2214. The 3 affected machines are all in the IT deployment group. Classic false positive on an internal tool.",
+    "suggested_action": "Restore from quarantine and add the hash to the EDR exception list referencing CHG-2214."
+  },
+  "ALT-004": {
+    "decision": "auto_resolve",
+    "confidence": 90,
+    "reasoning": "svc-legacy-backup was deliberately disabled in AD and the failures all originate from the retired backup server 10.2.8.40. This is a leftover cron job hitting a disabled account, not a brute-force attempt: attempts are evenly spaced, single source, single account.",
+    "suggested_action": "Close alert; open an ops ticket to remove the cron job on the decommissioned host."
+  },
+  "ALT-005": {
+    "decision": "auto_resolve",
+    "confidence": 93,
+    "reasoning": "Expiring certificate is on a VPN-only staging host with no internet exposure, and renewal ticket OPS-8811 is already open. No exploitation risk, remediation already in flight.",
+    "suggested_action": "Close as tracked; link this alert to OPS-8811."
+  },
+  "ALT-006": {
+    "decision": "auto_resolve",
+    "confidence": 87,
+    "reasoning": "Requests originate from chrome.exe to a legitimate Fastly CDN range, and the cadence matches dashboard auto-refresh rather than C2 beaconing: bursts align with page loads, jitter is human-driven, and payload sizes vary. Real beacons show fixed intervals and uniform sizes.",
+    "suggested_action": "Close; consider raising the beaconing detector's threshold for known CDN ASNs."
+  },
+  "ALT-007": {
+    "decision": "auto_resolve",
+    "confidence": 92,
+    "reasoning": "The Frankfurt IP is the corporate VPN egress node itself, so the 'impossible travel' is Mumbai user connecting to the Frankfurt VPN gateway 13 minutes later. Both sessions carry the same device certificate and MFA passed on each.",
+    "suggested_action": "Close; add corporate VPN egress IPs to the impossible-travel exclusion list."
+  },
+  "ALT-008": {
+    "decision": "auto_resolve",
+    "confidence": 94,
+    "reasoning": "svc-veeam reading 1.1M files on FS-03 between 01:00-03:00 matches the nightly backup window and its 90-day behavior baseline exactly. Read-only access pattern, no encryption or rename operations observed.",
+    "suggested_action": "Close as baseline activity; keep the behavior profile monitoring active."
+  },
+  "ALT-009": {
+    "decision": "auto_resolve",
+    "confidence": 89,
+    "reasoning": "Three failed passwords followed by success from the user's registered laptop on the office network at 09:31 on a Monday. No MFA anomaly, no source-IP change, no lockout threshold reached. Consistent with a mistyped password, not credential stuffing.",
+    "suggested_action": "Close; no action needed unless the pattern repeats across days."
+  },
+  "ALT-010": {
+    "decision": "auto_resolve",
+    "confidence": 85,
+    "reasoning": "TLS 1.1 on dev-api-02 is a real misconfiguration but the host sits on the isolated development VLAN with no production data or internet exposure, so exploitation requires an attacker already inside that segment. Low risk, routine hygiene.",
+    "suggested_action": "Close alert; open a normal-priority hardening ticket to disable TLS 1.1 on the dev VLAN."
+  },
+  "ALT-011": {
+    "decision": "auto_resolve",
+    "confidence": 84,
+    "reasoning": "USB device on KIOSK-01 triggered the policy alert, but kiosk policy already blocks execution and write access, and only read events for visitor-badge photos were observed. Control worked as designed; no data left the device.",
+    "suggested_action": "Close; verify kiosk USB policy remains enforced in the next config audit."
+  },
+  "ALT-012": {
+    "decision": "auto_resolve",
+    "confidence": 88,
+    "reasoning": "Single phishing report against a Mailchimp newsletter where SPF, DKIM, and DMARC all pass, links resolve to the vendor's registered domains, and 240 other recipients raised no reports. This is a user misjudging legitimate marketing mail.",
+    "suggested_action": "Close; reply to the reporter confirming the mail is legitimate to reinforce reporting behavior."
+  },
+  "ALT-013": {
+    "decision": "auto_resolve",
+    "confidence": 82,
+    "reasoning": "VS Code extension pack installed from the official marketplace, on the approved-software list, on the developer's own assigned laptop. Only violation is timing outside the change window, which is procedural rather than a security risk.",
+    "suggested_action": "Close; send an automated policy reminder about change-window timing."
+  },
+  "ALT-014": {
+    "decision": "auto_resolve",
+    "confidence": 78,
+    "reasoning": "Newly registered domains warrant a look, but this one resolves to Notion's documented hosting range, was reached via a Slack link in #onboarding, and shows normal HTTPS browsing volume rather than beaconing. Age of domain is the only indicator, and it is explained.",
+    "suggested_action": "Close; keep NRD monitoring active since it remains a useful signal overall."
+  },
+  "ALT-015": {
+    "decision": "auto_resolve",
+    "confidence": 81,
+    "reasoning": "Late-night print of a 300-page document matches the quarterly board-report template, the user is on the finance team, and it is quarter-end week. Volume and timing are explained by role and calendar; no other DLP flags on this user.",
+    "suggested_action": "Close as expected quarter-end activity."
+  },
+  "ALT-016": {
+    "decision": "escalate",
+    "confidence": 55,
+    "reasoning": "4.2 GB uploaded to an S3 bucket outside the organization's known account list. The user being a data engineer working during business hours makes a legitimate transfer plausible, but I cannot verify the bucket owner and the encrypted traffic gives DLP no content visibility. The destination is the deciding unknown and I cannot resolve it from available data.",
+    "suggested_action": "Ask the user or their manager to confirm the bucket; check CloudTrail or expense records for a sanctioned AWS account matching that endpoint."
+  },
+  "ALT-017": {
+    "decision": "escalate",
+    "confidence": 60,
+    "reasoning": "A new local admin account on a file server at 22:47 with no change ticket is a persistence pattern. It was created by a real domain admin who does occasionally work late, so this may be undocumented legitimate work, but 'no ticket plus off-hours plus new privileged account' is exactly what I should not close on my own judgment.",
+    "suggested_action": "Contact da-ravi directly to confirm; if unconfirmed within the hour, disable fsadmin2 and review FS-01 auth logs since creation."
+  },
+  "ALT-018": {
+    "decision": "escalate",
+    "confidence": 50,
+    "reasoning": "Encoded PowerShell querying AD group membership is dual-use: identical tooling appears in IT inventory scripts and in attacker reconnaissance. I found no matching scheduled task or ticket to anchor a benign explanation, and an HR workstation is an unusual place for ad-hoc AD queries. Without an owner for this script I cannot rule out recon.",
+    "suggested_action": "Pull the full process tree on WS-2019 and ask IT if they run inventory scripts against HR machines; check for follow-on LDAP enumeration."
+  },
+  "ALT-019": {
+    "decision": "escalate",
+    "confidence": 58,
+    "reasoning": "Valid MFA argues for the real user, but a 61-day dormant account authenticating from a new country while HR shows the employee on extended leave is a risky combination -- MFA fatigue attacks and SIM swaps both defeat 'MFA passed'. Travel status is the missing fact and I have no way to verify it.",
+    "suggested_action": "Reach the employee through an out-of-band channel to confirm travel; hold the session's refresh tokens until confirmed."
+  },
+  "ALT-020": {
+    "decision": "escalate",
+    "confidence": 52,
+    "reasoning": "An 18x read spike against the customers database is significant, and while a marketing export was scheduled this week, it should run under svc-etl, not svc-webapp. The wrong service account doing export-sized reads either means a misconfigured job or a compromised web application credential, and I cannot distinguish the two from telemetry alone.",
+    "suggested_action": "Confirm with the app team whether the export was rewired to svc-webapp; review that account's query patterns and source hosts for the 2-hour window."
+  },
+  "ALT-021": {
+    "decision": "escalate",
+    "confidence": 88,
+    "reasoning": "11 GB outbound from a production database server to a bulletproof-hosting IP with no business relationship, at 02:10, over a self-signed TLS session -- this has the full signature of staged data exfiltration. Confidence in the assessment is high, but high-severity events always go to a human: containment on a production DB is a business decision.",
+    "suggested_action": "Isolate DB-PROD-02 from egress immediately, preserve netflow and memory, and begin IR playbook for data exfiltration."
+  },
+  "ALT-022": {
+    "decision": "escalate",
+    "confidence": 93,
+    "reasoning": "3,200 files renamed to *.lockbit3 in 6 minutes, ransom notes dropped in 14 directories, and an attempted (blocked) shadow-copy deletion: active LockBit-family ransomware execution on WS-4410. This requires immediate human-led incident response regardless of my confidence -- automated closure is never appropriate for destructive activity in progress.",
+    "suggested_action": "Isolate WS-4410 now, disable the logged-in user's credentials, check lateral SMB connections from the host, and activate the ransomware runbook."
+  },
+  "ALT-023": {
+    "decision": "escalate",
+    "confidence": 90,
+    "reasoning": "Domain admin credentials used interactively on a marketing workstation outside the PAW set, followed within 4 minutes by DCSync-style replication requests, is a credential-theft chain in progress: DCSync from a non-DC host is how attackers pull the entire domain's password hashes. High severity, human decision required on domain-wide containment.",
+    "suggested_action": "Disable da-sunil immediately, isolate WS-1523, audit all DCSync/replication events, and prepare for a KRBTGT reset if replication succeeded."
+  },
+  "ALT-024": {
+    "decision": "escalate",
+    "confidence": 91,
+    "reasoning": "China Chopper signature match in a web-accessible upload directory plus IIS spawning cmd.exe twice means an attacker likely has interactive access to WEB-PROD-01 right now. Scope is unknown -- upload path suggests an unpatched or misconfigured upload handler. Public-facing production compromise always escalates.",
+    "suggested_action": "Take WEB-PROD-01 out of the load balancer, capture the web shell and IIS logs, and hunt for lateral movement from the DMZ."
+  },
+  "ALT-025": {
+    "decision": "escalate",
+    "confidence": 89,
+    "reasoning": "A 03:20 eDiscovery export of 40 executive mailboxes by an account whose MFA method was changed 6 hours earlier from a foreign IP is a textbook account-takeover-to-exfiltration sequence. The MFA change is the tell: attackers re-enroll MFA to persist. Executive mailbox exposure makes this a potential board-level incident.",
+    "suggested_action": "Suspend j.dsouza's sessions and the export job, revert the MFA change, and review what data the export already staged."
+  }
+}
