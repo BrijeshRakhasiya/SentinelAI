@@ -1,46 +1,50 @@
+import type { Session } from "@supabase/supabase-js";
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { api } from "../api/client";
+import { supabase } from "../lib/supabaseClient";
 import type { UserInfo } from "../api/types";
 
 interface AuthContextValue {
   user: UserInfo | null;
   loading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+function toUserInfo(session: Session | null): UserInfo | null {
+  const email = session?.user?.email;
+  return email ? { username: email } : null;
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
-    api
-      .me()
-      .then((info) => {
-        if (mounted) setUser(info);
-      })
-      .catch(() => {
-        if (mounted) setUser(null);
-      })
-      .finally(() => {
-        if (mounted) setLoading(false);
-      });
-    return () => {
-      mounted = false;
-    };
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(toUserInfo(data.session));
+      setLoading(false);
+    });
+
+    // Keeps state in sync across tabs, token refreshes, and sign-out.
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(toUserInfo(session));
+      setLoading(false);
+    });
+
+    return () => subscription.subscription.unsubscribe();
   }, []);
 
-  const login = useCallback(async (username: string, password: string) => {
-    const info = await api.login(username, password);
-    setUser(info);
+  const login = useCallback(async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw new Error(error.message);
+    setUser(toUserInfo(data.session));
   }, []);
 
   const logout = useCallback(async () => {
     try {
-      await api.logout();
+      await supabase.auth.signOut();
     } finally {
       setUser(null);
     }

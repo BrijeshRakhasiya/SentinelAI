@@ -11,7 +11,7 @@ from slowapi.middleware import SlowAPIMiddleware
 
 from app.config import settings
 from app.models.db import init_db
-from app.routes import auth, stats, stream
+from app.routes import chat, stats, stream
 from app.security import SecurityHeadersMiddleware, limiter
 
 logging.basicConfig(level=logging.INFO)
@@ -60,18 +60,18 @@ def create_app() -> FastAPI:
 
     app.add_middleware(SecurityHeadersMiddleware)
 
-    # Strict allowlist; credentials enabled so the JWT cookie flows cross-origin
+    # Strict allowlist; Authorization carries the Supabase access token
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_list,
         allow_credentials=True,
         allow_methods=["GET", "POST"],
-        allow_headers=["Content-Type", "X-Requested-With"],
+        allow_headers=["Content-Type", "Authorization", "X-Requested-With"],
     )
 
-    app.include_router(auth.router)
     app.include_router(stream.router)
     app.include_router(stats.router)
+    app.include_router(chat.router)
 
     @app.get("/health", tags=["health"])
     def health() -> dict:

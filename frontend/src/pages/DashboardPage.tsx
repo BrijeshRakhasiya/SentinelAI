@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
-import { useAlertStream } from "../hooks/useAlertStream";
+import { useAlertStreamContext } from "../context/AlertStreamContext";
 import { ExplainerBanner } from "../components/ExplainerBanner";
 import { StatCards } from "../components/StatCards";
 import { AnalystDashboard } from "../components/AnalystDashboard";
 import { AlertFeed } from "../components/AlertFeed";
 
 export function DashboardPage() {
-  const { alerts, status, restart } = useAlertStream(true);
+  const { alerts, status, restart } = useAlertStreamContext();
   const [lifetimeTotal, setLifetimeTotal] = useState<number | null>(null);
 
   const autoResolved = alerts.filter((a) => a.decision === "auto_resolve").length;

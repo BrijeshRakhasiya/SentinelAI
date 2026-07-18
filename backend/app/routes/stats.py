@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.dependencies import get_current_user
 from app.models.audit import TriageLog
 from app.models.db import get_db
-from app.routes.auth import get_current_user
 from app.schemas.triage import StatsResponse
 
 router = APIRouter(prefix="/api", tags=["stats"])

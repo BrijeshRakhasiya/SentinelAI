@@ -1,4 +1,5 @@
-import type { StatsResponse, UserInfo } from "./types";
+import { supabase } from "../lib/supabaseClient";
+import type { ChatContext, ChatMessage, ChatResponse, StatsResponse } from "./types";
 
 /**
  * Empty string means "same origin, relative paths" -- in dev that is
@@ -6,9 +7,6 @@ import type { StatsResponse, UserInfo } from "./types";
  * pointed at the deployed backend origin via REACT_APP_API_URL.
  */
 const API_URL = process.env.REACT_APP_API_URL ?? "";
-
-const CSRF_HEADER = "X-Requested-With";
-const CSRF_VALUE = "SentinelAI";
 
 export class ApiError extends Error {
   status: number;
@@ -20,17 +18,23 @@ export class ApiError extends Error {
   }
 }
 
+/** Current Supabase access token, or null if signed out. Login/session are
+ * owned entirely by Supabase; the backend only verifies this token. */
+async function getAccessToken(): Promise<string | null> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ?? null;
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const method = (options.method ?? "GET").toUpperCase();
-  const isMutating = method !== "GET" && method !== "HEAD";
+  const token = await getAccessToken();
 
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
     method,
-    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...(isMutating ? { [CSRF_HEADER]: CSRF_VALUE } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
   });
@@ -54,18 +58,22 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  login: (username: string, password: string) =>
-    request<UserInfo>("/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ username, password }),
-    }),
-
-  logout: () => request<{ detail: string }>("/auth/logout", { method: "POST" }),
-
-  me: () => request<UserInfo>("/auth/me"),
-
   stats: () => request<StatsResponse>("/api/stats"),
+
+  chat: (message: string, history: ChatMessage[], context: ChatContext) =>
+    request<ChatResponse>("/api/chat", {
+      method: "POST",
+      body: JSON.stringify({ message, history, context }),
+    }),
 };
 
-/** Full URL for the SSE triage stream -- consumed directly by EventSource. */
-export const streamUrl = () => `${API_URL}/api/stream`;
+/**
+ * Full URL for the SSE triage stream. Native EventSource can't set an
+ * Authorization header, so the Supabase access token is passed as a query
+ * param instead (verified the same way on the backend).
+ */
+export const streamUrl = async (): Promise<string> => {
+  const token = await getAccessToken();
+  const query = token ? `?token=${encodeURIComponent(token)}` : "";
+  return `${API_URL}/api/stream${query}`;
+};

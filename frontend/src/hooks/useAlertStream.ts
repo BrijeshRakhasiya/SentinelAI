@@ -17,7 +17,7 @@ interface UseAlertStreamResult {
 }
 
 /**
- * Opens `GET /api/stream` (cookie-authenticated SSE) and accumulates
+ * Opens `GET /api/stream` (Supabase-token-authenticated SSE) and accumulates
  * `TriageResult` events, newest first. The backend sends one `triage`
  * event per alert (~2s apart) then a final `done` event.
  */
@@ -37,30 +37,39 @@ export function useAlertStream(autoStart = true): UseAlertStreamResult {
   useEffect(() => {
     if (!started) return;
 
-    const source = new EventSource(streamUrl(), { withCredentials: true });
+    let source: EventSource | undefined;
+    let cancelled = false;
 
-    source.addEventListener("triage", (evt) => {
-      const messageEvent = evt as MessageEvent<string>;
-      try {
-        const result = JSON.parse(messageEvent.data) as TriageResult;
-        setAlerts((prev) => [{ ...result, receivedAt: Date.now() }, ...prev]);
-        setStatus("streaming");
-      } catch {
-        // Malformed event -- ignore rather than break the whole feed.
-      }
+    streamUrl().then((url) => {
+      if (cancelled) return;
+      source = new EventSource(url);
+
+      source.addEventListener("triage", (evt) => {
+        const messageEvent = evt as MessageEvent<string>;
+        try {
+          const result = JSON.parse(messageEvent.data) as TriageResult;
+          setAlerts((prev) => [{ ...result, receivedAt: Date.now() }, ...prev]);
+          setStatus("streaming");
+        } catch {
+          // Malformed event -- ignore rather than break the whole feed.
+        }
+      });
+
+      source.addEventListener("done", () => {
+        setStatus("complete");
+        source?.close();
+      });
+
+      source.onerror = () => {
+        setStatus((prev) => (prev === "complete" ? prev : "error"));
+        source?.close();
+      };
     });
 
-    source.addEventListener("done", () => {
-      setStatus("complete");
-      source.close();
-    });
-
-    source.onerror = () => {
-      setStatus((prev) => (prev === "complete" ? prev : "error"));
-      source.close();
+    return () => {
+      cancelled = true;
+      source?.close();
     };
-
-    return () => source.close();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started, session]);
 

@@ -9,8 +9,8 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import StreamingResponse
 
 from app.data.alerts import get_alerts
+from app.dependencies import get_current_user
 from app.models.db import SessionLocal
-from app.routes.auth import get_current_user
 from app.schemas.alert import Alert
 from app.schemas.triage import TriageResult
 from app.services.triage import triage_alert

@@ -7,7 +7,6 @@ Import the module-level ``settings`` instance everywhere -- never call
 
 from functools import lru_cache
 
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,12 +19,13 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     GEMINI_MODEL: str = "gemini-3.5-flash"
 
-    # Auth
-    JWT_SECRET: str = ""
-    JWT_ALGORITHM: str = "HS256"
-    JWT_EXPIRY_HOURS: int = 24
-    ADMIN_USERNAME: str = "admin"
-    ADMIN_PASSWORD_HASH: str = ""  # bcrypt hash, never plaintext
+    # Auth: user management/login lives in Supabase Auth. The frontend talks
+    # to Supabase directly (supabase-js) and sends the resulting access token
+    # to us as `Authorization: Bearer <token>`; we verify it against Supabase
+    # on every request (see app/dependencies.py). No secrets to sign/verify
+    # our own JWTs are needed here.
+    SUPABASE_URL: str = ""
+    SUPABASE_PUBLISHABLE_KEY: str = ""
 
     # CORS: comma-separated allowlist, never "*" (credentials are enabled)
     CORS_ORIGINS: str = "http://localhost:3000"
@@ -35,13 +35,6 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = "sqlite:///./sentinelai.db"
 
-    @field_validator("JWT_SECRET")
-    @classmethod
-    def _jwt_secret_length(cls, v: str) -> str:
-        if v and len(v) < 32:
-            raise ValueError("JWT_SECRET must be at least 32 characters")
-        return v
-
     @property
     def is_production(self) -> bool:
         return self.ENVIRONMENT.lower() == "production"
@@ -49,20 +42,6 @@ class Settings(BaseSettings):
     @property
     def cors_origins_list(self) -> list[str]:
         return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
-
-    # Cookie policy is environment-aware so login works both locally and on
-    # Render, where frontend and backend live on different origins:
-    #   dev  -> SameSite=Lax,  Secure=False (plain http://localhost)
-    #   prod -> SameSite=None, Secure=True  (cross-site cookie over HTTPS).
-    # SameSite=Strict (per ARCHITECTURE.md) would silently break cross-origin
-    # login on Render, so production intentionally relaxes it to None+Secure.
-    @property
-    def cookie_samesite(self) -> str:
-        return "none" if self.is_production else "lax"
-
-    @property
-    def cookie_secure(self) -> bool:
-        return self.is_production
 
 
 @lru_cache

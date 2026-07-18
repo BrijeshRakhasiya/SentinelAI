@@ -37,3 +37,30 @@ export interface StatsResponse {
 export interface UserInfo {
   username: string;
 }
+
+export type ChatRole = "user" | "assistant";
+
+export interface ChatMessage {
+  role: ChatRole;
+  content: string;
+}
+
+export interface ChatAlertContext {
+  id: string;
+  title: string;
+  severity: Severity;
+  decision: Decision;
+  confidence: number;
+  reasoning: string;
+}
+
+export interface ChatContext {
+  total: number;
+  auto_resolved: number;
+  escalated: number;
+  alerts: ChatAlertContext[];
+}
+
+export interface ChatResponse {
+  reply: string;
+}

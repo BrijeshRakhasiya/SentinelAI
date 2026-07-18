@@ -1,6 +1,12 @@
-"""Cross-cutting security: response headers, CSRF check, login rate limiter."""
+"""Cross-cutting security: response headers, rate limiter.
 
-from fastapi import HTTPException, Request, status
+Login/logout is handled entirely by Supabase Auth now, and every /api/*
+request is authenticated with a bearer token (not a cookie), so classic
+CSRF -- which relies on browsers automatically attaching cookies -- no
+longer applies here; there is nothing for a CSRF header to defend.
+"""
+
+from fastapi import Request
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -9,11 +15,8 @@ from starlette.responses import Response
 from app.config import settings
 
 # Shared limiter instance; wired to the app in main.py and used as a
-# decorator on the login route (5/min/IP against brute force).
+# decorator on rate-sensitive routes (e.g. chat) against abuse.
 limiter = Limiter(key_func=get_remote_address)
-
-CSRF_HEADER_NAME = "X-Requested-With"
-CSRF_HEADER_VALUE = "SentinelAI"
 
 
 # Swagger UI loads CSS/JS from jsDelivr and a FastAPI favicon; the strict API
@@ -47,17 +50,3 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
                 "max-age=63072000; includeSubDomains"
             )
         return response
-
-
-async def require_csrf_header(request: Request) -> None:
-    """CSRF defense-in-depth for state-changing endpoints.
-
-    Browsers won't attach custom headers on cross-site form/image requests
-    without a CORS preflight, so requiring `X-Requested-With: SentinelAI`
-    blocks classic CSRF even where SameSite=None is used (production).
-    """
-    if request.headers.get(CSRF_HEADER_NAME) != CSRF_HEADER_VALUE:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Missing or invalid CSRF header",
-        )

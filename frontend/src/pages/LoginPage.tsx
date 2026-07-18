@@ -1,15 +1,14 @@
 import { FormEvent, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { AlertCircle, Loader2, Lock, ShieldHalf, User } from "lucide-react";
+import { AlertCircle, Loader2, Lock, Mail, ShieldHalf } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
-import { ApiError } from "../api/client";
 
 export function LoginPage() {
   const { user, loading, login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [username, setUsername] = useState("admin");
+  const [email, setEmail] = useState("admin@sentinelai.io");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -25,10 +24,10 @@ export function LoginPage() {
     setError(null);
     setSubmitting(true);
     try {
-      await login(username, password);
+      await login(email, password);
       navigate("/", { replace: true });
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Something went wrong. Try again.");
+      setError(err instanceof Error ? err.message : "Something went wrong. Try again.");
     } finally {
       setSubmitting(false);
     }
@@ -67,16 +66,17 @@ export function LoginPage() {
           )}
 
           <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-400">
-            Username
+            Email
           </label>
           <div className="mb-4 flex items-center gap-2 rounded-lg border border-sentinel-border bg-black/30 px-3 py-2.5 focus-within:border-sentinel-cyan/50">
-            <User className="h-4 w-4 text-slate-500" />
+            <Mail className="h-4 w-4 text-slate-500" />
             <input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="username"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               className="w-full bg-transparent text-sm text-slate-100 outline-none placeholder:text-slate-600"
-              placeholder="admin"
+              placeholder="admin@sentinelai.io"
               required
             />
           </div>
@@ -114,7 +114,7 @@ export function LoginPage() {
         </form>
 
         <p className="mt-6 text-center text-xs text-slate-500">
-          Single admin account for this hackathon build — see <code className="text-slate-400">/integration</code>{" "}
+          Secured by Supabase Auth — see <code className="text-slate-400">/integration</code>{" "}
           for the real-world access model.
         </p>
       </div>
