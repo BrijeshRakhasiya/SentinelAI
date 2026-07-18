@@ -1,13 +1,15 @@
 """Connector/integration status for the dashboard's Integration page.
 
-Exposes which alert source is active (demo / real-world JSON feed / MCP
-connector) and, when it's an MCP connector, live health so the dashboard can
-show "connected / degraded / offline" instead of pretending everything is
-always fine (MCP_CREATION_PLAN.md "Phase 4: Dashboard Connector Status").
+Exposes which alert source is active (real-world JSON feed / MCP connector,
+both mock data) and, when it's an MCP connector, live health so the
+dashboard can show "connected / degraded / offline" instead of pretending
+everything is always fine (MCP_CREATION_PLAN.md "Phase 4: Dashboard
+Connector Status").
 
 The active source can also be switched at runtime from the dashboard via
-POST /api/integrations/source, so demoing "here's live GuardDuty data" vs
-"here's a broader real-world feed" doesn't require touching the backend.
+POST /api/integrations/source, so showing "here's simulated live GuardDuty
+data" vs "here's a broader real-world-shaped feed" doesn't require touching
+the backend.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status

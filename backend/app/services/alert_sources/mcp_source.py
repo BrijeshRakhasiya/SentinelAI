@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class McpAlertSource(AlertSource):
-    name = "AWS GuardDuty (MCP)"
+    name = "AWS GuardDuty via MCP (Mock Data)"
 
     def __init__(self, mcp_source: str = "aws_guardduty", since_minutes: int = 15, limit: int = 25) -> None:
         self.mcp_source = mcp_source

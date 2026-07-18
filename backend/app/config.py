@@ -35,16 +35,19 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = "sqlite:///./sentinelai.db"
 
-    # Alert ingestion source (see MCP_CREATION_PLAN.md):
-    #   demo            -> curated synthetic alerts (app/data/alerts.py)
-    #   real_world_json -> static real-world-shaped feed (app/data/real_world_soc_alerts.json)
-    #   mcp             -> live MCP connector (AWS GuardDuty by default)
-    ALERT_SOURCE: str = "demo"
+    # Alert ingestion source (see MCP_CREATION_PLAN.md). Both are mock data --
+    # there is no live external account wired up in this build:
+    #   real_world_json -> static real-world-shaped feed across many industries
+    #                       (app/data/real_world_soc_alerts.json)
+    #   mcp             -> simulated AWS GuardDuty connector exercising the
+    #                       real MCP tool pattern (app/services/mcp_client.py)
+    # Can also be switched at runtime via POST /api/integrations/source.
+    ALERT_SOURCE: str = "real_world_json"
 
     @property
     def alert_source_normalized(self) -> str:
         value = self.ALERT_SOURCE.strip().lower()
-        return value if value in ("demo", "real_world_json", "mcp") else "demo"
+        return value if value in ("real_world_json", "mcp") else "real_world_json"
 
     @property
     def is_production(self) -> bool:

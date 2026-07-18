@@ -538,5 +538,185 @@
     "title": "Kubernetes RBAC change matches approved infrastructure ticket",
     "description": "A new ClusterRoleBinding granting deploy permissions to the CI service account was applied during the maintenance window and matches change ticket INF-4471.",
     "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-061",
+    "source": "Epic EHR Audit Log",
+    "severity": "high",
+    "category": "healthcare_data_access",
+    "title": "Clinician accessed medical records of a high-profile patient outside their care team",
+    "description": "A nurse in the cardiology unit viewed the full chart of an admitted patient assigned to oncology, with no shared care-team relationship or consult order on file. HIPAA minimum-necessary access rule appears violated.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-062",
+    "source": "SWIFT CSP Monitor",
+    "severity": "high",
+    "category": "wire_fraud",
+    "title": "Anomalous SWIFT MT103 wire transfer request outside approval hours",
+    "description": "A regional bank branch submitted a $2.3M MT103 international wire request at 02:40 local time, signed off by a single approver instead of the required dual authorization.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-063",
+    "source": "PCI POS Security Monitor",
+    "severity": "high",
+    "category": "payment_fraud",
+    "title": "Point-of-sale malware indicator detected at retail checkout terminal",
+    "description": "A checkout terminal at a flagship retail store began writing card-track data to an unexpected local file shortly after a firmware update pushed outside the vendor's normal release schedule.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-064",
+    "source": "Claroty ICS/SCADA Monitor",
+    "severity": "high",
+    "category": "ot_intrusion",
+    "title": "Unauthorized PLC firmware write attempt on factory floor",
+    "description": "An engineering workstation on the plant network attempted to push a firmware update to a programmable logic controller on the assembly line outside the scheduled change window, from a login not on the OT change roster.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-065",
+    "source": "Grid SCADA Security Monitor",
+    "severity": "high",
+    "category": "ics_anomaly",
+    "title": "Unexpected remote command issued to substation breaker controller",
+    "description": "A remote-operations command to open a distribution substation breaker was issued from an IP outside the utility's control-center range, with no matching switching order in the outage management system.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-066",
+    "source": "Government SOC SIEM",
+    "severity": "high",
+    "category": "classified_data_access",
+    "title": "Bulk download of case files by a contractor account",
+    "description": "A contractor account with case-review access downloaded 1,400 case files in 20 minutes, an order of magnitude above its typical daily access pattern, shortly before the contract's stated end date.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-067",
+    "source": "Campus IT Security",
+    "severity": "medium",
+    "category": "student_data_exposure",
+    "title": "Misconfigured cloud drive exposed student transcript records",
+    "description": "A shared drive containing transcript PDFs for two graduating cohorts was set to 'anyone with the link' for 6 days after a registrar staff member changed sharing settings while troubleshooting an access issue.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-068",
+    "source": "Telecom Fraud Detection",
+    "severity": "medium",
+    "category": "signaling_abuse",
+    "title": "Anomalous SS7 signaling requests targeting subscriber location data",
+    "description": "A roaming partner's network element issued an unusually high volume of location-lookup signaling requests for a small set of subscriber numbers over 30 minutes, a pattern associated with covert location tracking.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-069",
+    "source": "Fleet Telematics Security Monitor",
+    "severity": "medium",
+    "category": "gps_spoofing",
+    "title": "GPS spoofing indicators detected on delivery fleet tracking data",
+    "description": "Three delivery vehicles on the same route reported instantaneous position jumps of over 50km before snapping back, consistent with GPS spoofing rather than a device malfunction (all three use the same telematics hardware batch).",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-070",
+    "source": "Hotel PMS Security Monitor",
+    "severity": "medium",
+    "category": "payment_fraud",
+    "title": "Guest payment card data accessed outside the checkout workflow",
+    "description": "A front-desk user account queried stored card details for 40 guest profiles directly through the property management system's admin panel rather than through the standard checkout screen.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-071",
+    "source": "Document Management Audit",
+    "severity": "medium",
+    "category": "privileged_access",
+    "title": "Paralegal account accessed privileged files outside assigned matters",
+    "description": "A paralegal account opened privileged client documents belonging to three matters they are not staffed on, including one involving a client adverse to one of their assigned cases.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-072",
+    "source": "Claims Fraud Detection",
+    "severity": "medium",
+    "category": "claims_fraud",
+    "title": "Duplicate claim submission pattern across multiple policyholders",
+    "description": "Four unrelated policyholders submitted auto-damage claims referencing the same repair shop and near-identical damage photos within a 48-hour window.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-073",
+    "source": "Research Data Vault Monitor",
+    "severity": "high",
+    "category": "ip_exfiltration",
+    "title": "Large download of unpublished clinical trial data by a contractor account",
+    "description": "A contracted biostatistician downloaded the full unblinded dataset for a Phase III trial two weeks before the scheduled data-lock, exceeding the scope of their statistical analysis plan access.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-074",
+    "source": "DRM Content Security Monitor",
+    "severity": "high",
+    "category": "content_leak",
+    "title": "Pre-release film file matched to a leaked torrent hash",
+    "description": "A watermarked screener copy of an unreleased film, distributed to a post-production vendor, was matched by hash to a file circulating on a torrent tracker two weeks before theatrical release.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-075",
+    "source": "Flight Ops Systems Monitor",
+    "severity": "low",
+    "category": "change_management",
+    "title": "Configuration change to crew-scheduling system matches approved maintenance ticket",
+    "description": "An unscheduled-looking configuration push to the crew-scheduling system occurred during a window that matches an approved change ticket for a vendor-issued patch (MAINT-2291).",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-076",
+    "source": "Connected Vehicle Security Platform",
+    "severity": "medium",
+    "category": "vehicle_telematics_abuse",
+    "title": "Unusual remote-start command pattern issued via mobile app",
+    "description": "A fleet vehicle received 22 remote-start commands within 10 minutes from the owner's mobile app account, a pattern consistent with a compromised app session rather than normal use.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-077",
+    "source": "AgTech IoT Security Monitor",
+    "severity": "low",
+    "category": "iot_anomaly",
+    "title": "Irrigation controller reporting from a newly swapped device ID",
+    "description": "A field irrigation sensor began reporting under a new device ID after a known hardware swap logged in the farm's maintenance system earlier the same day.",
+    "expected_decision": "auto_resolve"
+  },
+  {
+    "id": "RW-078",
+    "source": "Smart Building Access Monitor",
+    "severity": "medium",
+    "category": "physical_security",
+    "title": "Smart lock override used outside scheduled maintenance window",
+    "description": "A commercial property's smart lock system logged an administrative override on a tenant suite door at 03:15, with no maintenance ticket, cleaning contract, or tenant-reported issue on file.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-079",
+    "source": "Exchange Wallet Monitor",
+    "severity": "high",
+    "category": "crypto_theft",
+    "title": "Large hot-wallet withdrawal minutes after admin API key rotation",
+    "description": "A crypto exchange's hot wallet sent 340 ETH to a newly created address 6 minutes after an admin API key was rotated outside the documented rotation schedule, with no matching withdrawal request from a customer account.",
+    "expected_decision": "escalate"
+  },
+  {
+    "id": "RW-080",
+    "source": "Anti-Cheat & Fraud Monitor",
+    "severity": "medium",
+    "category": "account_takeover",
+    "title": "In-game currency transferred to a new account seconds after password reset",
+    "description": "A player account transferred its entire premium-currency balance to a newly created account 12 seconds after a password reset, from a device and region never associated with the original account.",
+    "expected_decision": "escalate"
   }
 ]

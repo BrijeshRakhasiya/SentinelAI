@@ -46,7 +46,7 @@ services:
       - key: DATABASE_URL
         value: sqlite:///./sentinelai.db
       - key: ALERT_SOURCE
-        # demo | real_world_json | mcp -- see MCP_CREATION_PLAN.md
+        # real_world_json | mcp -- both are mock data, see MCP_CREATION_PLAN.md
         value: mcp
       - key: CORS_ORIGINS
         # Update to the frontend's real URL once it's deployed.

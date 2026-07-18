@@ -34,7 +34,7 @@ def _load_raw_records() -> list[dict]:
 
 
 class JsonAlertSource(AlertSource):
-    name = "Real-world SOC alert feed"
+    name = "Real-World SOC Alert Feed (Mock Data)"
 
     def get_alerts(self) -> list[Alert]:
         alerts: list[Alert] = []

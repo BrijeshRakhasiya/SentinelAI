@@ -15,10 +15,9 @@ const STATUS_META: Record<ConnectorStatusValue, { label: string; tone: PillTone 
 };
 
 const SOURCE_LABEL: Record<string, string> = {
-  demo: "Demo dataset",
-  real_world_json: "Real-world SOC alert feed",
-  mcp: "MCP connector",
-};
+  real_world_json: "Real-World SOC Alert Feed (Mock Data)",
+  mcp: "AWS GuardDuty via MCP (Mock Data)",
+} as const;
 
 const REFRESH_INTERVAL_MS = 30_000;
 

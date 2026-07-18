@@ -1,16 +1,9 @@
-"""Tests for the alert source abstraction (demo / real-world JSON / MCP)."""
+"""Tests for the alert source abstraction (real-world JSON / MCP)."""
 
 from app.schemas.alert import Alert, Severity
-from app.services.alert_sources.demo_source import DemoAlertSource
 from app.services.alert_sources.json_source import JsonAlertSource
 from app.services.alert_sources.mcp_source import McpAlertSource
 from app.services.mcp_client import McpClient
-
-
-def test_demo_source_returns_normalized_alerts():
-    alerts = DemoAlertSource().get_alerts()
-    assert len(alerts) > 0
-    assert all(isinstance(a, Alert) for a in alerts)
 
 
 def test_json_source_loads_real_world_feed():

@@ -16,8 +16,8 @@ from app.schemas.alert import Alert
 class AlertSource(ABC):
     """Base class for anything that can produce a batch of normalized alerts."""
 
-    #: Human-readable label surfaced on the dashboard (e.g. "Demo dataset",
-    #: "AWS GuardDuty (MCP)").
+    #: Human-readable label surfaced on the dashboard (e.g. "Real-World SOC
+    #: Alert Feed (Mock Data)", "AWS GuardDuty via MCP (Mock Data)").
     name: str = "Unknown source"
 
     @abstractmethod
