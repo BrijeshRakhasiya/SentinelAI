@@ -36,6 +36,7 @@ services:
       - key: DATABASE_URL
         value: sqlite:///./sentinelai.db
       - key: CORS_ORIGINS
+        # Update to the frontend's real URL once it's deployed.
         value: https://sentinelai-frontend.onrender.com
 
   - type: web
@@ -47,7 +48,7 @@ services:
     staticPublishPath: ./build
     envVars:
       - key: REACT_APP_API_URL
-        value: https://sentinelai-backend.onrender.com
+        value: https://sentinelai-9tp4.onrender.com
       - key: REACT_APP_SUPABASE_URL
         sync: false
       - key: REACT_APP_SUPABASE_PUBLISHABLE_KEY
