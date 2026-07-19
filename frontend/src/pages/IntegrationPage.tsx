@@ -20,7 +20,7 @@ const escalationTargets = ["Slack", "Microsoft Teams", "Jira", "ServiceNow"];
 
 const limitations = [
   "Role-based analyst/admin permissions are roadmap work.",
-  "Current demo can run realistic sample alerts; MCP connector mode is the path to live SIEM/EDR data.",
+  "Both alert sources above are mock data -- the real-world feed is a hand-curated dataset and the AWS GuardDuty MCP connector runs against a simulated finding pool, not a live AWS account. Wiring up a real connector is the next step.",
   "Free-tier hosting can cold-start after inactivity.",
   "SQLite audit log is fine at demo scale; production would move to Postgres.",
 ];
@@ -116,8 +116,8 @@ export function IntegrationPage() {
 
         <InfoCard icon={Cloud} title="Realtime Alert Sources">
           <p className="mb-3">
-            After MCP integration, SentinelAI can use live feeds instead of demo data. Each source becomes a
-            connector, but the dashboard and triage logic stay the same.
+            Today both sources are mock data. Swapping in a live connector (e.g. a real AWS account) is a drop-in
+            change -- the dashboard and triage logic stay exactly the same.
           </p>
           <div className="flex flex-wrap gap-1.5">
             {mcpSources.map((s) => (
