@@ -2,7 +2,7 @@
 
 ## Goal
 
-SentinelAI today proves the **AI triage and SOC overview layer** using realistic demo alerts. The next step is to add **MCP connectors** so SentinelAI can receive real-time alerts from external security platforms and apply the same triage logic to live data.
+SentinelAI today proves the **AI triage and SOC overview layer**. The next milestone is the 30 July live demo, where SentinelAI should connect to a real SIEM/EDR-style source and apply the same triage logic to live alerts.
 
 Simple positioning:
 
@@ -78,13 +78,14 @@ Start with one connector, prove the pattern, then add more.
 
 | Priority | Connector | Why |
 |---|---|---|
-| 1 | AWS GuardDuty | Common cloud security alerts; easy API story |
-| 2 | Microsoft Sentinel / Azure security alerts | Strong enterprise SOC use case |
-| 3 | CrowdStrike / EDR | Endpoint alerts like malware, PowerShell, ransomware |
-| 4 | Okta / identity provider | Login anomalies and MFA abuse |
-| 5 | Slack / Jira / ServiceNow | Escalation delivery after triage |
+| 1 | Wazuh | Free/open-source SIEM/EDR; best for local live demo |
+| 2 | AWS GuardDuty | Common cloud security alerts; strong cloud story |
+| 3 | Microsoft Sentinel / Azure security alerts | Enterprise SOC use case |
+| 4 | CrowdStrike / EDR | Endpoint alerts like malware, PowerShell, ransomware |
+| 5 | Okta / identity provider | Login anomalies and MFA abuse |
+| 6 | Slack / Jira / ServiceNow | Escalation delivery after triage |
 
-For hackathon explanation, use AWS GuardDuty as the first real connector example.
+For the 30 July demo, use **Wazuh first**. It avoids cloud cost risk and can generate real alerts locally or on a VM. Use AWS GuardDuty as the next connector roadmap.
 
 ---
 
@@ -293,9 +294,9 @@ Important:
 
 ### Day 2: First MCP Connector
 
-- Build `aws_guardduty_mcp`
+- Build `wazuh_mcp`
 - Implement `get_alerts`
-- Convert GuardDuty finding severity to low/medium/high
+- Convert Wazuh alert severity to low/medium/high
 - Return normalized alerts
 
 ### Day 3: Backend Integration
@@ -331,13 +332,13 @@ Use this:
 
 ## MVP For This Project
 
-For the hackathon/project, do not build every connector at once.
+For this project, do not build every connector at once.
 
 MVP:
 
 1. Keep existing dashboard and triage logic.
 2. Add `ALERT_SOURCE=mcp`.
-3. Build one MCP connector for AWS GuardDuty-style alerts.
+3. Build one MCP connector for Wazuh alerts.
 4. Normalize alerts into existing `Alert` schema.
 5. Stream them through the same `/api/stream`.
 6. Show connector status on Integration page.
