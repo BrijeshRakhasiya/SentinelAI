@@ -14,14 +14,14 @@
 | AI | Google Gemini (server-side only) |
 | Auth | JWT in httpOnly cookie (bcrypt password hash) |
 | Streaming | SSE (`/api/stream`) |
-| Deploy | Docker Compose locally; Render for demo |
+| Deploy | Docker Compose locally; Render via GitHub push/Blueprint |
 
 ---
 
 ## System Overview
 
 ```
-Synthetic alerts (alerts.py)
+Real-world JSON alerts
         ↓
 FastAPI backend ──→ Gemini agent (agent.py)
         ↓                    ↓
@@ -59,8 +59,11 @@ SentinelAI/
 │   │   └── components/      # AlertFeed, AlertCard, AnalystDashboard
 │   ├── package.json         # react-scripts (no Vite)
 │   └── Dockerfile           # nginx serves build/
+├── render.yaml              # Render backend Docker service + frontend static site
 └── docker-compose.yml
 ```
+
+The backend Dockerfile is used by Render for the FastAPI service. The frontend Dockerfile remains useful for local Docker Compose or Docker-based hosting, but Render Static Site hosting is the recommended frontend deployment path.
 
 ---
 
@@ -189,7 +192,10 @@ CORS_ORIGINS=http://localhost:3000
 USE_CACHE=true
 ENVIRONMENT=development
 DATABASE_URL=sqlite:///./sentinelai.db
+ALERT_SOURCE=real_world_json
 ```
+
+`ALERT_SOURCE=real_world_json` is the current stable default for local and Render demos. Wazuh live alert ingestion is planned as the next MCP connector phase; backend logic should switch to connector mode only after the Wazuh connector is implemented and tested.
 
 ### Frontend (`.env`)
 
@@ -203,7 +209,8 @@ REACT_APP_API_URL=http://localhost:8000
 
 1. **Backend core** — FastAPI, auth, agent, audit log, security middleware
 2. **SSE + React** — stream endpoint, CRA frontend, login, dashboard
-3. **Deploy** — Docker, Render, `USE_CACHE=true`, security checklist
-4. **Buffer** — Integration page, audit log viewer, demo rehearsal
+3. **Deploy** — Docker, Render Blueprint/static site, `USE_CACHE=true`, security checklist
+4. **Live connector phase** — Wazuh MCP connector, then backend ingestion logic and connector status
+5. **Buffer** — Integration page, audit log viewer, demo rehearsal
 
 See [plan.md](./plan.md) for hackathon timeline and demo script.

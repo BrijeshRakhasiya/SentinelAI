@@ -8,7 +8,7 @@ Deploy SentinelAI on Render with:
 - React frontend
 - Supabase Auth
 - Gemini key stored only on the backend
-- stable demo alert source until the Wazuh MCP connector is ready
+- stable real-world JSON alert source until the Wazuh MCP connector and backend live-ingestion logic are ready
 
 ## Recommended Render Setup
 
@@ -43,7 +43,7 @@ SUPABASE_URL=https://your-project-ref.supabase.co
 SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 USE_CACHE=true
 DATABASE_URL=sqlite:///./sentinelai.db
-ALERT_SOURCE=demo
+ALERT_SOURCE=real_world_json
 CORS_ORIGINS=https://your-render-frontend-url.onrender.com
 ```
 
@@ -89,21 +89,22 @@ Local URLs:
 `ALERT_SOURCE` controls the backend alert feed:
 
 ```env
-ALERT_SOURCE=demo
+ALERT_SOURCE=real_world_json
 ```
 
 Available modes:
 
-- `demo`: curated synthetic alerts with cached responses; best for stable demos.
-- `real_world_json`: realistic sector-style alerts from JSON.
-- `mcp`: connector mode; use after Wazuh/AWS connector is implemented and tested.
+- `real_world_json`: realistic sector-style alerts from JSON; recommended for Render now.
+- `mcp`: currently a simulated connector mode; use for live Wazuh only after the MCP connector and backend source logic are implemented and tested.
 
 For the 30 July live demo:
 
-1. Use `demo` while setting up Render.
-2. Build the Wazuh MCP connector.
-3. Test locally.
-4. Switch Render to `ALERT_SOURCE=mcp` only after the connector is stable.
+1. Use `real_world_json` while setting up Render.
+2. Deploy through GitHub push / Render Blueprint.
+3. Build the Wazuh MCP connector separately.
+4. Test the connector locally against Wazuh.
+5. Add the backend live-ingestion logic after the connector is stable.
+6. Switch Render to live connector mode only after end-to-end testing.
 
 ## Pre-Demo Checklist
 

@@ -46,14 +46,9 @@ services:
       - key: DATABASE_URL
         value: sqlite:///./sentinelai.db
       - key: ALERT_SOURCE
-<<<<<<< HEAD
-        # demo | real_world_json | mcp -- see MCP_CREATION_PLAN.md.
-        # Keep demo stable until the Wazuh MCP connector is implemented.
-        value: demo
-=======
-        # real_world_json | mcp -- both are mock data, see MCP_CREATION_PLAN.md
-        value: mcp
->>>>>>> fbd20077460cded6dff90ac69ad681ec3d26e15e
+        # real_world_json is the stable Render default until the Wazuh MCP
+        # connector and backend live-ingestion logic are implemented.
+        value: real_world_json
       - key: CORS_ORIGINS
         # Update to the frontend's real URL once it's deployed.
         value: https://sentinelai-frontend.onrender.com

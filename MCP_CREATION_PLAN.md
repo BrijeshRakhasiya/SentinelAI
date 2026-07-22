@@ -13,7 +13,7 @@ Simple positioning:
 ## Current State
 
 ```text
-Demo alert dataset
+Real-world JSON alert dataset
         ↓
 FastAPI backend
         ↓
@@ -32,14 +32,14 @@ This is useful because it shows:
 - audit trail
 - analyst workflow
 
-But the current data source is still demo data.
+But the current stable data source is still static JSON. The next phase is to build a live Wazuh MCP connector first, then wire that connector into backend ingestion logic after it is tested.
 
 ---
 
 ## Target MCP Architecture
 
 ```text
-AWS / Azure / Splunk / CrowdStrike / Okta / Email Gateway
+Wazuh first, then AWS / Azure / Splunk / CrowdStrike / Okta / Email Gateway
         ↓
 MCP connector tools
         ↓
@@ -198,15 +198,14 @@ This prevents every integration from changing the core AI logic.
 Add a new env var:
 
 ```env
-ALERT_SOURCE=demo
-# demo | real_world_json | mcp
+ALERT_SOURCE=real_world_json
+# real_world_json | mcp
 ```
 
 Backend behavior:
 
-- `demo` → use `alerts.py`
-- `real_world_json` → use `real_world_soc_alerts.json`
-- `mcp` → call MCP connector tool and normalize alerts
+- `real_world_json` -> use `real_world_soc_alerts.json`; this is the current Render-safe default
+- `mcp` -> connector mode; only use for live Wazuh after the MCP connector and backend source logic are implemented and tested
 
 ### Phase 2: Alert Provider Interface
 
@@ -337,10 +336,11 @@ For this project, do not build every connector at once.
 MVP:
 
 1. Keep existing dashboard and triage logic.
-2. Add `ALERT_SOURCE=mcp`.
+2. Keep Render on `ALERT_SOURCE=real_world_json` until live ingestion is ready.
 3. Build one MCP connector for Wazuh alerts.
 4. Normalize alerts into existing `Alert` schema.
-5. Stream them through the same `/api/stream`.
-6. Show connector status on Integration page.
+5. Add backend logic to call the connector after it is tested.
+6. Stream Wazuh alerts through the same `/api/stream`.
+7. Show connector status on Integration page.
 
 This proves the platform can move from demo alerts to real alert feeds.

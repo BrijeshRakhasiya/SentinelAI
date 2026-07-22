@@ -7,11 +7,13 @@ Move SentinelAI from a static demo feed to a credible live SOC integration demo.
 By 30 July, the demo should show:
 
 - a real or realistic SIEM source producing alerts
-- SentinelAI fetching those alerts through a connector layer
+- SentinelAI fetching those alerts through a Wazuh MCP connector, once implemented
 - Gemini analyzing alert context
 - backend safety rules making the final decision
 - the React dashboard showing auto-resolved vs escalated alerts
 - audit logging for every decision
+
+Current deployment remains on `ALERT_SOURCE=real_world_json` until the Wazuh MCP connector is built and the backend live-ingestion logic is added.
 
 ## Recommended Demo Source: Wazuh
 
@@ -69,7 +71,7 @@ The same connector pattern can be repeated after the first one works.
 
 Use this explanation:
 
-> Earlier SentinelAI used realistic demo alerts. For the 30 July live demo, we are connecting SentinelAI to Wazuh, an open-source SIEM/EDR platform. Wazuh generates real security alerts from system activity. Our MCP connector fetches those alerts, normalizes them, and sends them to SentinelAI. Gemini analyzes the alert, but the FastAPI backend applies safety rules and makes the final decision. The dashboard shows whether the alert is auto-resolved or escalated, and every decision is saved in the audit log.
+> SentinelAI currently proves the workflow using realistic JSON alerts. For the live demo phase, we are adding Wazuh as the first real SIEM/EDR source. Wazuh generates real security alerts from system activity. The planned MCP connector will fetch those alerts, normalize them, and send them to SentinelAI. Gemini analyzes the alert, but the FastAPI backend applies safety rules and makes the final decision. The dashboard shows whether the alert is auto-resolved or escalated, and every decision is saved in the audit log.
 
 ## Demo Alerts To Generate
 
@@ -110,7 +112,7 @@ Prepare three hero alerts:
 
 ### By 26 July
 
-- Connect Wazuh alerts to the existing `/api/stream` pipeline
+- Add backend logic to connect Wazuh alerts to the existing `/api/stream` pipeline
 - Show Wazuh source labels in the dashboard
 - Add connector status card
 

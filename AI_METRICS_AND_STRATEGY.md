@@ -168,9 +168,9 @@ Reliability principle:
 
 > If SentinelAI cannot safely analyze an alert, it should fail closed and escalate or pause automation.
 
-For the Wazuh live demo, reliability should focus on:
+For the Wazuh live demo phase, reliability should focus on:
 
-- Connector status visible in the dashboard.
+- Wazuh MCP connector status visible in the dashboard after the connector is implemented.
 - Last sync time.
 - Alerts fetched.
 - Clear degraded/offline state.
@@ -251,12 +251,13 @@ Prioritize work using:
 
 Near-term roadmap:
 
-1. Wazuh live alert demo.
-2. Connector status and error handling.
-3. Analyst feedback and override capture.
-4. Evaluation dataset and AI quality dashboard.
-5. AWS GuardDuty connector.
-6. Jira/Slack/ServiceNow escalation.
+1. Keep Render stable on `ALERT_SOURCE=real_world_json`.
+2. Build the Wazuh MCP connector for live alerts.
+3. Add backend live-ingestion logic and connector status/error handling.
+4. Analyst feedback and override capture.
+5. Evaluation dataset and AI quality dashboard.
+6. AWS GuardDuty connector.
+7. Jira/Slack/ServiceNow escalation.
 
 ---
 
@@ -270,7 +271,7 @@ Show that SentinelAI can take real SOC-style alerts, reason over them, apply saf
 
 1. Security tools create too many alerts.
 2. Analysts need decisions, not just scores.
-3. SentinelAI ingests alerts from demo data or Wazuh.
+3. SentinelAI ingests alerts from the current real-world JSON feed, then from Wazuh after the MCP connector and backend live-ingestion logic are implemented.
 4. Gemini explains risk.
 5. Backend safety rules decide auto-resolve or escalate.
 6. Dashboard shows decision, confidence, reasoning, and audit trail.
