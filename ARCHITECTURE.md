@@ -59,11 +59,11 @@ SentinelAI/
 │   │   └── components/      # AlertFeed, AlertCard, AnalystDashboard
 │   ├── package.json         # react-scripts (no Vite)
 │   └── Dockerfile           # nginx serves build/
-├── render.yaml              # Render backend Docker service + frontend static site
+├── render.yaml              # Render backend + frontend Docker services
 └── docker-compose.yml
 ```
 
-The backend Dockerfile is used by Render for the FastAPI service. The frontend Dockerfile remains useful for local Docker Compose or Docker-based hosting, but Render Static Site hosting is the recommended frontend deployment path.
+Both Dockerfiles are used by Render: the backend runs FastAPI with Uvicorn, and the frontend builds the React app then serves it through nginx. The frontend nginx config is templated so it listens on Render's `$PORT`.
 
 ---
 
@@ -209,7 +209,7 @@ REACT_APP_API_URL=http://localhost:8000
 
 1. **Backend core** — FastAPI, auth, agent, audit log, security middleware
 2. **SSE + React** — stream endpoint, CRA frontend, login, dashboard
-3. **Deploy** — Docker, Render Blueprint/static site, `USE_CACHE=true`, security checklist
+3. **Deploy** — Docker, Render Blueprint, `USE_CACHE=true`, security checklist
 4. **Live connector phase** — Wazuh MCP connector, then backend ingestion logic and connector status
 5. **Buffer** — Integration page, audit log viewer, demo rehearsal
 

@@ -19,8 +19,12 @@ RUN npm run build
 # --- Serve stage ---
 FROM nginx:1.27-alpine
 
+ENV PORT=80
+
 COPY --from=build /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# The official nginx image envsubst-renders templates on startup, so this
+# listens on Render's $PORT in production and 80 locally by default.
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
 

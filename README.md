@@ -183,12 +183,12 @@ Services:
 
 ## Render Deployment
 
-This repo includes [render.yaml](./render.yaml) for Render Blueprint deployment from GitHub. Push changes to GitHub, then Render can build the backend Docker web service from [backend/Dockerfile](./backend/Dockerfile) and the frontend as a static site from `frontend/`.
+This repo includes [render.yaml](./render.yaml) for Render Blueprint deployment from GitHub. Push changes to GitHub, then Render builds both services from Dockerfiles and redeploys them automatically when Auto-Deploy is enabled.
 
 Recommended Render setup:
 
 - Backend: Docker web service, `rootDir: backend`, `dockerfilePath: ./Dockerfile`.
-- Frontend: Static Site, `rootDir: frontend`, build command `npm ci && npm run build`, publish directory `build`.
+- Frontend: Docker web service, `rootDir: frontend`, `dockerfilePath: ./Dockerfile`.
 - Production `ALERT_SOURCE=real_world_json` until the Wazuh MCP connector and backend live-ingestion logic are implemented.
 
 Full deployment instructions are in [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md).

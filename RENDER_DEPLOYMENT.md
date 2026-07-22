@@ -15,14 +15,14 @@ Deploy SentinelAI on Render with:
 Use:
 
 - Backend: Docker web service from `backend/Dockerfile`
-- Frontend: Static site from `frontend/` using `npm ci && npm run build`
+- Frontend: Docker web service from `frontend/Dockerfile`
 
-Why frontend static site:
+Why Docker for both services:
 
-- React builds to static files.
-- Render static hosting is simpler and cheaper.
-- `REACT_APP_*` environment variables are baked during build.
-- The frontend Dockerfile still exists for local Docker Compose or Docker-based hosting.
+- The deployment path is consistent: GitHub push -> Render Docker build -> service restart.
+- The frontend Dockerfile builds the React app and serves it with nginx.
+- `REACT_APP_*` environment variables are passed by Render as Docker build args and baked into the CRA build.
+- nginx handles React Router SPA fallback inside the container.
 
 ## Backend Service
 
@@ -54,9 +54,8 @@ Do not commit these values to git.
 Render settings:
 
 - Root directory: `frontend`
-- Runtime: Static Site
-- Build command: `npm ci && npm run build`
-- Publish directory: `build`
+- Runtime: Docker
+- Dockerfile: `frontend/Dockerfile`
 
 Required env vars:
 
@@ -65,6 +64,8 @@ REACT_APP_API_URL=https://your-render-backend-url.onrender.com
 REACT_APP_SUPABASE_URL=https://your-project-ref.supabase.co
 REACT_APP_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
 ```
+
+Render web services must listen on `$PORT`. The frontend nginx config is rendered from a template at container startup so it listens on Render's assigned port in production and port `80` locally by default.
 
 ## Local Docker
 
@@ -100,7 +101,7 @@ Available modes:
 For the 30 July live demo:
 
 1. Use `real_world_json` while setting up Render.
-2. Deploy through GitHub push / Render Blueprint.
+2. Deploy backend and frontend through GitHub push / Render Blueprint Docker builds.
 3. Build the Wazuh MCP connector separately.
 4. Test the connector locally against Wazuh.
 5. Add the backend live-ingestion logic after the connector is stable.
